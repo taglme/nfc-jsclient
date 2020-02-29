@@ -8,11 +8,13 @@
     "license": "MIT",
     "scripts": {
         "build": "tsc",
-        "lint": "eslint ./src/* --ext tsx",
+        "lint": "eslint ./src --ext ts",
         "test": "jest --passWithNoTests",
         "postinstall": "yarn build && yarn lint && yarn test"
     },
     "dependencies": {
+        "axios": "^0.19.2",
+        "lodash": "^4.17.15",
         "typescript": "^3.8.3"
     },
     "devDependencies": {
