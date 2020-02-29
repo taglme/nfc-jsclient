@@ -45,7 +45,7 @@ class AppInfo {
     }
 }
 
-export default class About {
+export default class AboutService {
     private readonly url: string;
     private api: Api;
     private path = '/about';

@@ -1,9 +1,11 @@
 import Api from '../api';
-import About from './about';
+import AboutService from './about';
+import AdapterService from './adapters';
 
 export default class Client {
     private locale: string;
-    About: About;
+    About: AboutService;
+    Adapters: AdapterService;
 
     constructor(url: string, locale: string) {
         this.locale = locale;
@@ -13,6 +15,7 @@ export default class Client {
             },
         });
 
-        this.About = new About(api, url);
+        this.About = new AboutService(api, url);
+        this.Adapters = new AdapterService(api, url);
     }
 }
