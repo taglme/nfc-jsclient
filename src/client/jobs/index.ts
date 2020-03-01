@@ -1,19 +1,15 @@
 import Api from '../../api';
-import PaginationInfo, { PaginationListResource } from '../pagination';
-import { Command, JobFilter, JobResource, JobStatus, JobStepResource, NewJob } from './types';
+import PaginationInfo, { ListResponse } from '../pagination';
+import { Command, JobFilter, JobResource, JobStatus, JobStepResource, NewJob, JobListResource } from './types';
 import { buildJobsQueryParams } from './helpers';
 
-type JobListResource = {
-    readonly items: JobResource[];
-} & PaginationListResource;
-
-class JobStep {
+export class JobStep {
     command: Command;
     params: object;
 
     constructor(s: JobStepResource) {
         this.params = s.params;
-        this.command = Command[Command[parseInt(s.command)]];
+        this.command = Command.parse(s.command);
     }
 }
 
@@ -34,7 +30,7 @@ class Job {
     constructor(e: JobResource) {
         this.jobID = e.job_id;
         this.jobName = e.job_name;
-        this.status = JobStatus[JobStatus[parseInt(e.status)]];
+        this.status = JobStatus.parse(e.status);
         this.adapterID = e.adapter_id;
         this.adapterName = e.adapter_name;
         this.repeat = e.repeat;
@@ -45,11 +41,6 @@ class Job {
         this.steps = e.steps.map(s => new JobStep(s));
         this.createdAt == new Date(e.created_at);
     }
-}
-
-interface ListResponse {
-    items: Job[];
-    pagInfo: PaginationListResource;
 }
 
 export default class JobService {
@@ -63,14 +54,14 @@ export default class JobService {
         this.api = api;
     }
 
-    getAll = (adapterId: string): Promise<ListResponse> => this.getFiltered(adapterId, {});
+    getAll = (adapterId: string): Promise<ListResponse<Job>> => this.getFiltered(adapterId, {});
 
-    getFiltered = (adapterId: string, filter: JobFilter): Promise<ListResponse> => {
+    getFiltered = (adapterId: string, filter: JobFilter): Promise<ListResponse<Job>> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + buildJobsQueryParams(filter);
 
         return this.api
             .call<JobListResource>(({ get }) => get(url, {}))
-            .then<ListResponse>(resp => ({
+            .then<ListResponse<Job>>(resp => ({
                 pagInfo: new PaginationInfo(resp),
                 items: resp.items.map(j => new Job(j)),
             }));
@@ -100,7 +91,7 @@ export default class JobService {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + jobId;
 
         return this.api
-            .call<JobResource>(({ patch }) => patch(url, { data: { status } }))
+            .call<JobResource>(({ patch }) => patch(url, { data: { status: JobStatus.toString(status) } }))
             .then<Job>(resp => new Job(resp));
     };
 }

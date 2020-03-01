@@ -18,3 +18,8 @@ export default class PaginationInfo {
         this.offset = i.offset;
     }
 }
+
+export interface ListResponse<T extends {}> {
+    items: T[];
+    pagInfo: PaginationListResource;
+}

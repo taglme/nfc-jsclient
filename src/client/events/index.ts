@@ -1,5 +1,5 @@
 import Api from '../../api';
-import PaginationInfo, { PaginationListResource } from '../pagination';
+import PaginationInfo, { ListResponse } from '../pagination';
 import { EventResource, EventName, EventListResource, EventFilter } from './types';
 import { buildEventsQueryParams } from './helpers';
 
@@ -17,13 +17,8 @@ class Event {
         this.adapterName = e.adapter_name;
         this.data = e.data;
         this.createdAt = new Date(e.created_at);
-        this.name = EventName[EventName[parseInt(e.name)]];
+        this.name = EventName.parse(e.name);
     }
-}
-
-interface ListResponse {
-    items: Event[];
-    pagInfo: PaginationListResource;
 }
 
 interface NewEvent {
@@ -42,14 +37,14 @@ export default class EventService {
         this.api = api;
     }
 
-    getAll = (): Promise<ListResponse> => this.getFiltered(undefined, {});
+    getAll = (): Promise<ListResponse<Event>> => this.getFiltered(undefined, {});
 
-    getFiltered = (adapterId: string | undefined, filter: EventFilter): Promise<ListResponse> => {
+    getFiltered = (adapterId: string | undefined, filter: EventFilter): Promise<ListResponse<Event>> => {
         const url = this.url + this.path + buildEventsQueryParams(adapterId, filter);
 
         return this.api
             .call<EventListResource>(({ get }) => get(url, {}))
-            .then<ListResponse>(resp => ({
+            .then<ListResponse<Event>>(resp => ({
                 pagInfo: new PaginationInfo(resp),
                 items: resp.items.map(e => new Event(e)),
             }));
@@ -59,7 +54,7 @@ export default class EventService {
         const url = this.url + this.path;
 
         return this.api
-            .call<EventResource>(({ post }) => post(url, { data: e }))
+            .call<EventResource>(({ post }) => post(url, { data: { e } }))
             .then<Event>(resp => new Event(resp));
     };
 }

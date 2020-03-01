@@ -1,4 +1,4 @@
-import { EventFilter } from './types';
+import { EventFilter, EventName } from './types';
 
 export const buildEventsQueryParams = (adapterID: string | undefined, filter: EventFilter): string => {
     let queryParams = '';
@@ -8,7 +8,7 @@ export const buildEventsQueryParams = (adapterID: string | undefined, filter: Ev
     }
 
     if (filter.name) {
-        queryParams += '&name=' + filter.name;
+        queryParams += '&name=' + EventName.toString(filter.name);
     }
 
     if (filter.sortBy) {

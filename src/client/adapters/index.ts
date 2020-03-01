@@ -4,7 +4,7 @@ import { AdapterResource, AdapterShortResource, AdapterType } from './types';
 class Adapter {
     href: string;
     name: string;
-    type: string;
+    type: AdapterType;
     driver?: string;
     kind: string;
     adapterId: string;
@@ -12,7 +12,7 @@ class Adapter {
     constructor(a: AdapterResource | AdapterShortResource) {
         this.href = a.href;
         this.name = a.name;
-        this.type = a.type;
+        this.type = AdapterType.parse(a.type);
         this.kind = a.kind;
         this.adapterId = a.adapter_id;
 
@@ -35,7 +35,7 @@ export default class AdapterService {
     getAll = (): Promise<Adapter[]> => this.getFiltered();
 
     getFiltered = (adapterType?: AdapterType): Promise<Adapter[]> => {
-        const url = this.url + this.path + adapterType ? '?type=' + adapterType : '';
+        const url = this.url + this.path + adapterType ? '?type=' + AdapterType.toString(adapterType) : '';
 
         return this.api
             .call<AdapterShortResource[]>(({ get }) => get(url, {}))

@@ -1,10 +1,14 @@
-import { JobFilter, JobStatus } from './types';
+import { JobRunStatus, RunFilter } from './types';
 
-export const buildJobsQueryParams = (filter: JobFilter): string => {
+export const buildJobRunsQueryParams = (filter: RunFilter): string => {
     let queryParams = '';
 
+    if (filter.jobId) {
+        queryParams += '&job_id=' + filter.jobId;
+    }
+
     if (filter.status) {
-        queryParams += '&status=' + JobStatus.toString(filter.status);
+        queryParams += '&status=' + JobRunStatus.toString(filter.status);
     }
 
     if (filter.sortBy) {

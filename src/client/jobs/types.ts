@@ -1,21 +1,101 @@
+import { PaginationListResource } from '../pagination';
+
 export enum Command {
-    CommandGetTag = 1,
-    CommandTransmitAdapter,
-    CommandTransmitTag,
-    CommandWriteNdef,
-    CommandReadNdef,
-    CommandFormatDefault,
-    CommandLockPermanent,
-    CommandSetPassword,
-    CommandRemovePassword,
-    CommandAuthPassword,
-    CommandGetDump,
-    CommandSetLocale,
+    Unknown,
+    GetTags,
+    TransmitAdapter,
+    TransmitTag,
+    WriteNdef,
+    ReadNdef,
+    FormatDefault,
+    LockPermanent,
+    SetPassword,
+    RemovePassword,
+    AuthPassword,
+    GetDump,
+    SetLocale,
+}
+
+export namespace Command {
+    export function toString(c: Command): string {
+        const names = [
+            'unknown',
+            'get_tags',
+            'transmit_adapter',
+            'transmit_tag',
+            'write_ndef',
+            'read_ndef',
+            'format_default',
+            'lock_permanent',
+            'set_password',
+            'remove_password',
+            'auth_password',
+            'get_dump',
+            'set_locale',
+        ];
+
+        if (c < Command.GetTags || c > Command.SetLocale) {
+            return names[0];
+        }
+        return names[c];
+    }
+
+    export function parse(s: string): Command {
+        switch (s) {
+            case Command.toString(Command.GetTags):
+                return Command.GetTags;
+            case Command.toString(Command.TransmitAdapter):
+                return Command.TransmitAdapter;
+            case Command.toString(Command.TransmitTag):
+                return Command.TransmitTag;
+            case Command.toString(Command.WriteNdef):
+                return Command.WriteNdef;
+            case Command.toString(Command.ReadNdef):
+                return Command.ReadNdef;
+            case Command.toString(Command.FormatDefault):
+                return Command.FormatDefault;
+            case Command.toString(Command.LockPermanent):
+                return Command.LockPermanent;
+            case Command.toString(Command.SetPassword):
+                return Command.SetPassword;
+            case Command.toString(Command.RemovePassword):
+                return Command.RemovePassword;
+            case Command.toString(Command.AuthPassword):
+                return Command.AuthPassword;
+            case Command.toString(Command.GetDump):
+                return Command.GetDump;
+            case Command.toString(Command.SetLocale):
+                return Command.SetLocale;
+        }
+
+        return Command.Unknown;
+    }
 }
 
 export enum JobStatus {
-    Pending = 1,
-    JobStatusActive,
+    Unknown,
+    Pending,
+    Active,
+}
+
+export namespace JobStatus {
+    export function toString(status: JobStatus): string {
+        const names = ['unknown', 'pending', 'active'];
+        if (status < JobStatus.Pending || status > JobStatus.Active) {
+            return names[0];
+        }
+        return names[status];
+    }
+
+    export function parse(s: string): JobStatus {
+        switch (s) {
+            case JobStatus.toString(JobStatus.Pending):
+                return JobStatus.Pending;
+            case JobStatus.toString(JobStatus.Active):
+                return JobStatus.Active;
+        }
+        return JobStatus.Unknown;
+    }
 }
 
 export interface JobStepResource {
@@ -39,6 +119,10 @@ export interface JobResource {
     steps: JobStepResource[];
     created_at: string;
 }
+
+export type JobListResource = {
+    readonly items: JobResource[];
+} & PaginationListResource;
 
 export interface NewJob {
     job_name: string;
