@@ -1,6 +1,5 @@
 import { SnippetCategory, SnippetFilter, SnippetResource } from './types';
 import Api from '../../api';
-import { AdapterResource, AdapterShortResource, AdapterType } from '../adapters/types';
 import { buildSnippetsQueryParams } from './helpers';
 
 class Snippet {
