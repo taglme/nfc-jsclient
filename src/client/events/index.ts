@@ -1,74 +1,7 @@
-import Api from '../api';
-import PaginationInfo, { PaginationListResource } from './pagination';
-
-enum EventName {
-    TagDiscovery = 1,
-    TagRelease,
-    AdapterDiscovery,
-    AdapterRelease,
-    JobSubmited,
-    JobActivated,
-    JobPended,
-    JobDeleted,
-    JobFinished,
-    RunStarted,
-    RunSuccess,
-    RunError,
-    ServerStarted,
-    ServerStopped,
-}
-
-interface EventResource {
-    event_id: string;
-    name: string;
-    adapter_id: string;
-    adapter_name: string;
-    data?: any;
-    created_at: string;
-}
-
-type EventListResource = {
-    readonly items: EventResource[];
-} & PaginationListResource;
-
-interface EventFilter {
-    name?: EventName;
-    sortBy?: string;
-    sortDir?: string;
-    offset?: number;
-    limit?: number;
-}
-
-// Function builds events get query params
-const buildEventsQueryParams = (adapterID: string | undefined, filter: EventFilter): string => {
-    let queryParams = '';
-
-    if (adapterID) {
-        queryParams += '&adapter_id=' + adapterID;
-    }
-
-    if (filter.name) {
-        queryParams += '&name=' + filter.name;
-    }
-
-    if (filter.sortBy) {
-        queryParams += '&sortby=' + filter.sortBy;
-    }
-
-    if (filter.sortDir) {
-        queryParams += '&sortdir=' + filter.sortDir;
-    }
-
-    if (filter.offset) {
-        queryParams += '&offset=' + filter.offset;
-    }
-
-    if (filter.limit) {
-        queryParams += '&limit=' + filter.limit;
-    }
-
-    return queryParams.replace('&', '?');
-};
+import Api from '../../api';
+import PaginationInfo, { PaginationListResource } from '../pagination';
+import { EventResource, EventName, EventListResource, EventFilter } from './types';
+import { buildEventsQueryParams } from './helpers';
 
 class Event {
     eventID: string;
