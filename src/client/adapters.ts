@@ -54,7 +54,7 @@ export default class AdapterService {
         this.api = api;
     }
 
-    getAll = () => this.getFiltered();
+    getAll = (): Promise<Adapter[]> => this.getFiltered();
 
     getFiltered = (adapterType?: AdapterType): Promise<Adapter[]> => {
         const url = this.url + this.path + adapterType ? '?type=' + adapterType : '';
