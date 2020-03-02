@@ -3,7 +3,7 @@ import PaginationInfo, { ListResponse } from '../pagination';
 import { EventResource, EventName, EventListResource, EventFilter } from './types';
 import { buildEventsQueryParams } from './helpers';
 
-class Event {
+export class Event {
     eventID: string;
     name: EventName;
     adapterID: string;
