@@ -1,5 +1,5 @@
-import { EventResource } from '../events/types';
-import { Event } from '../events';
+import { EventResource } from '../models/events';
+import { Event } from './events';
 
 type EventHandler = (e: Event) => any;
 type ErrorHandler = (e: Error) => any;
@@ -11,7 +11,7 @@ export default class WsService {
     private readonly errorHandlers: ErrorHandler[];
     private conn?: WebSocket;
 
-    constructor(url) {
+    constructor(url: string) {
         this.url = url.replace(/(http(s)?:)/g, 'ws:');
         this.errorHandlers = [];
         this.eventHandlers = [];

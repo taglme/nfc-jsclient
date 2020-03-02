@@ -1,19 +1,5 @@
-import Api from '../api';
-
-interface AppInfoResource {
-    name: string;
-    version: string;
-    commit: string;
-    sdk_info: string;
-    platform: string;
-    build_time: string;
-    check_success: boolean;
-    suported: boolean;
-    have_update: boolean;
-    update_version: string;
-    update_download: string;
-    started_at: string;
-}
+import { AppInfoResource } from '../models/about';
+import { IApi } from '../interfaces';
 
 class AppInfo {
     name: string;
@@ -47,10 +33,10 @@ class AppInfo {
 
 export default class AboutService {
     private readonly url: string;
-    private api: Api;
+    private api: IApi;
     private path = '/about';
 
-    constructor(api: Api, url: string) {
+    constructor(api: IApi, url: string) {
         this.url = url;
         this.api = api;
     }

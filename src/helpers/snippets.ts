@@ -1,4 +1,4 @@
-import { SnippetCategory, SnippetFilter } from './types';
+import { SnippetCategory, SnippetFilter } from '../models/snippets';
 
 export const buildSnippetsQueryParams = (filter: SnippetFilter): string => {
     let queryParams = '';

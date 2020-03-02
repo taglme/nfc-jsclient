@@ -1,5 +1,5 @@
-import { TagResource, TagShortResource, TagType } from './types';
-import Api from '../../api';
+import { TagResource, TagShortResource, TagType } from '../models/tags';
+import { IApi } from '../interfaces';
 
 export class Tag {
     tagID: string;
@@ -25,17 +25,20 @@ export class Tag {
 
 export class TagService {
     private readonly url: string;
-    private api: Api;
+    private api: IApi;
     private path = '/tags';
     private basePath = '/adapters';
 
-    constructor(api: Api, url: string) {
+    constructor(api: IApi, url: string) {
         this.url = url;
         this.api = api;
     }
 
     getAll = (adapterId: string, tagType?: TagType): Promise<Tag[]> => {
-        const url = this.url + this.path + tagType ? '?type=' + TagType.toString(tagType) : '';
+        const url =
+            this.url + this.basePath + '/' + adapterId + this.path + tagType
+                ? '?type=' + TagType.toString(tagType)
+                : '';
 
         return this.api
             .call<TagShortResource[]>(({ get }) => get(url, {}))
@@ -43,7 +46,7 @@ export class TagService {
     };
 
     get = (adapterId: string, tagId: string): Promise<Tag> => {
-        const url = this.url + this.path + '/' + tagId;
+        const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + tagId;
 
         return this.api
             .call<TagResource>(({ get }) => get(url, {}))

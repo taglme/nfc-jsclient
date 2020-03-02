@@ -1,4 +1,4 @@
-import { JobRunStatus, RunFilter } from './types';
+import { JobRunStatus, RunFilter } from '../models/run';
 
 export const buildJobRunsQueryParams = (filter: RunFilter): string => {
     let queryParams = '';

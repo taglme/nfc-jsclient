@@ -1,6 +1,6 @@
-import { SnippetCategory, SnippetFilter, SnippetResource } from './types';
-import Api from '../../api';
-import { buildSnippetsQueryParams } from './helpers';
+import { SnippetCategory, SnippetFilter, SnippetResource } from '../models/snippets';
+import { buildSnippetsQueryParams } from '../helpers/snippets';
+import { IApi } from '../interfaces';
 
 class Snippet {
     name: string;
@@ -22,10 +22,10 @@ class Snippet {
 
 export class SnippetService {
     private readonly url: string;
-    private api: Api;
+    private api: IApi;
     private path = '/snippets';
 
-    constructor(api: Api, url: string) {
+    constructor(api: IApi, url: string) {
         this.url = url;
         this.api = api;
     }

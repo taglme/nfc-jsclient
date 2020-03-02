@@ -1,32 +1,5 @@
-import { PaginationListResource } from '../pagination';
-import { TagResource } from '../tags/types';
-
-export enum CommandStatus {
-    Unknown,
-    Success,
-    Error,
-}
-
-export namespace CommandStatus {
-    export function toString(status: CommandStatus): string {
-        const names = ['unknown', 'success', 'error'];
-        if (status < CommandStatus.Success || status > CommandStatus.Error) {
-            return names[0];
-        }
-        return names[status];
-    }
-
-    export function parse(s: string): CommandStatus {
-        switch (s) {
-            case CommandStatus.toString(CommandStatus.Success):
-                return CommandStatus.Success;
-            case CommandStatus.toString(CommandStatus.Error):
-                return CommandStatus.Error;
-        }
-
-        return CommandStatus.Unknown;
-    }
-}
+import { PaginationListResource } from './pagination';
+import { TagResource } from './tags';
 
 export enum JobRunStatus {
     Unknown,

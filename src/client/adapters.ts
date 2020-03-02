@@ -1,5 +1,5 @@
-import Api from '../../api';
-import { AdapterResource, AdapterShortResource, AdapterType } from './types';
+import { AdapterResource, AdapterShortResource, AdapterType } from '../models/adapters';
+import { IApi } from '../interfaces';
 
 class Adapter {
     href: string;
@@ -24,10 +24,10 @@ class Adapter {
 
 export default class AdapterService {
     private readonly url: string;
-    private api: Api;
+    private api: IApi;
     private path = '/adapters';
 
-    constructor(api: Api, url: string) {
+    constructor(api: IApi, url: string) {
         this.url = url;
         this.api = api;
     }

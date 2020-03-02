@@ -1,10 +1,14 @@
-import { JobFilter, JobStatus } from './types';
+import { EventFilter, EventName } from '../models/events';
 
-export const buildJobsQueryParams = (filter: JobFilter): string => {
+export const buildEventsQueryParams = (adapterID: string | undefined, filter: EventFilter): string => {
     let queryParams = '';
 
-    if (filter.status) {
-        queryParams += '&status=' + JobStatus.toString(filter.status);
+    if (adapterID) {
+        queryParams += '&adapter_id=' + adapterID;
+    }
+
+    if (filter.name) {
+        queryParams += '&name=' + EventName.toString(filter.name);
     }
 
     if (filter.sortBy) {

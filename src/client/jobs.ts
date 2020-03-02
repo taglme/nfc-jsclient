@@ -1,7 +1,8 @@
-import Api from '../../api';
-import PaginationInfo, { ListResponse } from '../pagination';
-import { Command, JobFilter, JobResource, JobStatus, JobStepResource, NewJob, JobListResource } from './types';
-import { buildJobsQueryParams } from './helpers';
+import PaginationInfo, { ListResponse } from '../models/pagination';
+import { JobFilter, JobResource, JobStatus, JobStepResource, NewJob, JobListResource } from '../models/jobs';
+import { buildJobsQueryParams } from '../helpers/jobs';
+import { Command } from '../models/commands';
+import { IApi } from '../interfaces';
 
 export class JobStep {
     command: Command;
@@ -45,11 +46,11 @@ class Job {
 
 export default class JobService {
     private readonly url: string;
-    private api: Api;
+    private api: IApi;
     private path = '/jobs';
     private basePath = '/adapters';
 
-    constructor(api: Api, url: string) {
+    constructor(api: IApi, url: string) {
         this.url = url;
         this.api = api;
     }

@@ -1,16 +1,9 @@
-import Api from '../../api';
-import PaginationInfo, { ListResponse } from '../pagination';
-import {
-    JobRunResource,
-    JobRunStatus,
-    JobRunListResource,
-    RunFilter,
-    CommandStatus,
-    StepResultResource,
-} from './types';
-import { buildJobRunsQueryParams } from './helpers';
-import { Tag } from '../tags';
-import { Command } from '../jobs/types';
+import PaginationInfo, { ListResponse } from '../models/pagination';
+import { JobRunResource, JobRunStatus, JobRunListResource, RunFilter, StepResultResource } from '../models/run';
+import { buildJobRunsQueryParams } from '../helpers/runs';
+import { Tag } from './tags';
+import { Command, CommandStatus } from '../models/commands';
+import { IApi } from '../interfaces';
 
 class StepResult {
     command: Command;
@@ -60,11 +53,11 @@ interface NewEvent {
 
 export default class RunService {
     private readonly url: string;
-    private api: Api;
+    private api: IApi;
     private path = '/runs';
     private basePath = '/adapters';
 
-    constructor(api: Api, url: string) {
+    constructor(api: IApi, url: string) {
         this.url = url;
         this.api = api;
     }

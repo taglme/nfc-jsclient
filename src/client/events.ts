@@ -1,7 +1,7 @@
-import Api from '../../api';
-import PaginationInfo, { ListResponse } from '../pagination';
-import { EventResource, EventName, EventListResource, EventFilter } from './types';
-import { buildEventsQueryParams } from './helpers';
+import PaginationInfo, { ListResponse } from '../models/pagination';
+import { EventResource, EventName, EventListResource, EventFilter, NewEvent } from '../models/events';
+import { buildEventsQueryParams } from '../helpers/events';
+import { IApi } from '../interfaces';
 
 export class Event {
     eventID: string;
@@ -21,18 +21,12 @@ export class Event {
     }
 }
 
-interface NewEvent {
-    name: string;
-    adapter_id: string;
-    data?: any;
-}
-
 export default class EventService {
     private readonly url: string;
-    private api: Api;
+    private api: IApi;
     private path = '/events';
 
-    constructor(api: Api, url: string) {
+    constructor(api: IApi, url: string) {
         this.url = url;
         this.api = api;
     }

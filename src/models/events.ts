@@ -1,4 +1,4 @@
-import { PaginationListResource } from '../pagination';
+import { PaginationListResource } from './pagination';
 
 export enum EventName {
     Unknown,
@@ -100,4 +100,10 @@ export interface EventFilter {
     sortDir?: string;
     offset?: number;
     limit?: number;
+}
+
+export interface NewEvent {
+    name: string;
+    adapter_id: string;
+    data?: any;
 }

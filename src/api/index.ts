@@ -1,19 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig, Method, AxiosPromise } from 'axios';
 import { pick } from 'lodash';
+import { IApi, FunctionApiCallback, TRequestHandlers } from '../interfaces';
 
 const axiosInstance = axios.create();
 
-type FunctionReq = <T extends {}>(url: string, config: AxiosRequestConfig) => AxiosPromise<T>;
-interface TRequestHandlers {
-    get: FunctionReq;
-    post: FunctionReq;
-    put: FunctionReq;
-    patch: FunctionReq;
-    del: FunctionReq;
-}
-type FunctionApiCallback = <T extends {}>(h: TRequestHandlers) => AxiosPromise<T>;
-
-export default class Api {
+export default class Api implements IApi {
     private axiosInstance: AxiosInstance;
     constructor(config?: AxiosRequestConfig) {
         this.axiosInstance = axios.create(config);
