@@ -1,4 +1,6 @@
 import { PaginationListResource } from './pagination';
+import { Command, CommandString } from './commands';
+import { NdefRecordResource } from './ndefconv';
 
 export enum JobStatus {
     Unknown,
@@ -26,10 +28,47 @@ export namespace JobStatus {
     }
 }
 
-export interface JobStepResource {
-    command: string;
-    params: object;
-}
+export type JobStepResource =
+    | {
+          command: CommandString.GetTags;
+          params: {};
+      }
+    | {
+          command: CommandString.TransmitAdapter;
+          params: {
+              tx_bytes: string;
+          };
+      }
+    | {
+          command: CommandString.TransmitTag;
+          params: {
+              tx_bytes: string;
+          };
+      }
+    | {
+          command: CommandString.WriteNdef;
+          params: {
+              message: NdefRecordResource[];
+          };
+      }
+    | { command: CommandString.ReadNdef; params: {} }
+    | { command: CommandString.FormatDefault; params: {} }
+    | { command: CommandString.LockPermanent; params: {} }
+    | {
+          command: CommandString.SetPassword;
+          params: {
+              password: string;
+          };
+      }
+    | { command: CommandString.RemovePassword; params: {} }
+    | {
+          command: CommandString.AuthPassword;
+          params: {
+              password: string;
+          };
+      }
+    | { command: CommandString.GetDump; params: {} }
+    | { command: CommandString.SetLocale; params: { locale: string } };
 
 export interface JobResource {
     job_id: string;

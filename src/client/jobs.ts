@@ -12,6 +12,10 @@ export class JobStep {
         this.params = s.params;
         this.command = Command.parse(s.command);
     }
+
+    toResource = () => {
+
+    }
 }
 
 class Job {

@@ -14,22 +14,38 @@ export enum Command {
     SetLocale,
 }
 
+export enum CommandString {
+    Unknown = 'unknown',
+    GetTags = 'get_tags',
+    TransmitAdapter = 'transmit_adapter',
+    TransmitTag = 'transmit_tag',
+    WriteNdef = 'write_ndef',
+    ReadNdef = 'read_ndef',
+    FormatDefault = 'format_default',
+    LockPermanent = 'lock_permanent',
+    SetPassword = 'set_password',
+    RemovePassword = 'remove_password',
+    AuthPassword = 'auth_password',
+    GetDump = 'get_dump',
+    SetLocale = 'set_locale',
+}
+
 export namespace Command {
     export function toString(c: Command): string {
         const names = [
-            'unknown',
-            'get_tags',
-            'transmit_adapter',
-            'transmit_tag',
-            'write_ndef',
-            'read_ndef',
-            'format_default',
-            'lock_permanent',
-            'set_password',
-            'remove_password',
-            'auth_password',
-            'get_dump',
-            'set_locale',
+            CommandString.Unknown,
+            CommandString.GetTags,
+            CommandString.TransmitAdapter,
+            CommandString.TransmitTag,
+            CommandString.WriteNdef,
+            CommandString.ReadNdef,
+            CommandString.FormatDefault,
+            CommandString.LockPermanent,
+            CommandString.SetPassword,
+            CommandString.RemovePassword,
+            CommandString.AuthPassword,
+            CommandString.GetDump,
+            CommandString.SetLocale,
         ];
 
         if (c < Command.GetTags || c > Command.SetLocale) {
@@ -40,29 +56,29 @@ export namespace Command {
 
     export function parse(s: string): Command {
         switch (s) {
-            case Command.toString(Command.GetTags):
+            case CommandString.GetTags:
                 return Command.GetTags;
-            case Command.toString(Command.TransmitAdapter):
+            case CommandString.TransmitAdapter:
                 return Command.TransmitAdapter;
-            case Command.toString(Command.TransmitTag):
+            case CommandString.TransmitTag:
                 return Command.TransmitTag;
-            case Command.toString(Command.WriteNdef):
+            case CommandString.WriteNdef:
                 return Command.WriteNdef;
-            case Command.toString(Command.ReadNdef):
+            case CommandString.ReadNdef:
                 return Command.ReadNdef;
-            case Command.toString(Command.FormatDefault):
+            case CommandString.FormatDefault:
                 return Command.FormatDefault;
-            case Command.toString(Command.LockPermanent):
+            case CommandString.LockPermanent:
                 return Command.LockPermanent;
-            case Command.toString(Command.SetPassword):
+            case CommandString.SetPassword:
                 return Command.SetPassword;
-            case Command.toString(Command.RemovePassword):
+            case CommandString.RemovePassword:
                 return Command.RemovePassword;
-            case Command.toString(Command.AuthPassword):
+            case CommandString.AuthPassword:
                 return Command.AuthPassword;
-            case Command.toString(Command.GetDump):
+            case CommandString.GetDump:
                 return Command.GetDump;
-            case Command.toString(Command.SetLocale):
+            case CommandString.SetLocale:
                 return Command.SetLocale;
         }
 

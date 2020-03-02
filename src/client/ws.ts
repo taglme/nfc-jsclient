@@ -1,5 +1,8 @@
 import { EventResource } from '../models/events';
 import { Event } from './events';
+import { Locale } from '../models/locales';
+import { JobStep } from './jobs';
+import { CommandString } from '../models/commands';
 
 type EventHandler = (e: Event) => any;
 type ErrorHandler = (e: Error) => any;
@@ -55,4 +58,17 @@ export default class WsService {
     };
 
     public isConnected = (): boolean => this.conn?.readyState === WebSocket.OPEN;
+
+    public setLocale = (l: string): void => {
+        const locale = Locale.parse(l);
+
+        const jobStep = new JobStep({
+            command: CommandString.SetLocale,
+            params: {
+                locale: Locale.toString(locale),
+            },
+        });
+
+        this.conn.send(JSON.stringify(jobStep));
+    };
 }
