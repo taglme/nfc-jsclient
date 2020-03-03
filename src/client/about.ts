@@ -41,6 +41,7 @@ export default class AboutService {
         this.api = api;
     }
 
+    // Get fetching the about info
     get = (): Promise<AppInfo | Error> =>
         this.api
             .call<AppInfoResource>(({ get }) => get(this.url + this.path, {}))

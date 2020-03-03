@@ -45,12 +45,6 @@ export class JobRun {
     }
 }
 
-interface NewEvent {
-    name: string;
-    adapter_id: string;
-    data?: any;
-}
-
 export default class RunService {
     private readonly url: string;
     private api: IApi;
@@ -62,8 +56,17 @@ export default class RunService {
         this.api = api;
     }
 
+    // Get Run list for adapter with all details
     getAll = (adapterId: string): Promise<ListResponse<JobRun> | Error> => this.getFiltered(adapterId, {});
 
+    // Get Run list for adapter with all details
+    // adapterId – Unique identifier in form of UUID representing a specific adapter.
+    // filter.status – Runs' status filter.
+    // filter.job_id – Filter Run by specified Job
+    // filter.limit – Limit number of events in response.
+    // filter.offset – Offset from start of list.
+    // filter.sortBy – Sort field for list.
+    // filter.sortDir – Sort direction for list
     getFiltered = (adapterId: string, filter: RunFilter): Promise<ListResponse<JobRun> | Error> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + buildJobRunsQueryParams(filter);
 
@@ -76,6 +79,9 @@ export default class RunService {
             .catch((err: Error) => new Error('Error on job runs get filtered: ' + err.name + err.message));
     };
 
+    // Get all specefied jobrun's details
+    // runId – Unique identifier in form of UUID representing a specific job run.
+    // adapterId – Unique identifier in form of UUID representing a specific adapter.
     get = (adapterId: string, runId: string): Promise<JobRun | Error> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + runId;
 

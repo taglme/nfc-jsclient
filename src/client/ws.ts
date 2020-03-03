@@ -19,11 +19,14 @@ export default class WsService {
         this.eventHandlers = [];
         this.conn = undefined;
     }
-
+    // Pass event to the registered event handlers
+    // e – Event
     private eventListener = (e: Event): void => {
         this.eventHandlers.forEach(h => h(e));
     };
 
+    // Pass error to the registered error handlers
+    // e – error
     private errorListener = (e: Error): void => {
         this.errorHandlers.forEach(h => h(e));
     };
@@ -33,6 +36,7 @@ export default class WsService {
         this.eventListener(event);
     };
 
+    // Creating a WS connection and start listening for messages
     public connect = (): void => {
         this.conn = new WebSocket(this.url + this.path);
 
@@ -49,6 +53,7 @@ export default class WsService {
         };
     };
 
+    // Closing the WS connection and stop listening for messages
     public disconnect = (): void => {
         if (this.isConnected()) {
             this.conn.close();
@@ -56,8 +61,11 @@ export default class WsService {
         }
     };
 
+    // Checks if WS connection is established
     public isConnected = (): boolean => this.conn?.readyState === WebSocket.OPEN;
 
+    // Sending a message to set locale via WS connection
+    // locale – locale identifier string
     public setLocale = (l: string): void => {
         const locale = Locale.parse(l);
 
@@ -69,5 +77,17 @@ export default class WsService {
                 },
             }),
         );
+    };
+
+    // Handle event
+    // handler – Function which is called once event is emitted
+    onEvent = (h: () => void): void => {
+        this.eventHandlers.push(h);
+    };
+
+    // Handle error
+    // h – Function which is called once error is emitted
+    onError = (h: () => void): void => {
+        this.errorHandlers.push(h);
     };
 }

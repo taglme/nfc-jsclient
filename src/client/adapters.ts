@@ -32,8 +32,11 @@ export default class AdapterService {
         this.api = api;
     }
 
+    // Adapters list endpoint returns information about all adapters. The response includes array of Adapters
     getAll = (): Promise<Adapter[] | Error> => this.getFiltered();
 
+    // Adapters list endpoint returns information about all adapters. The response includes array of Adapters
+    // adapterType – Adapters' type filter.
     getFiltered = (adapterType?: AdapterType): Promise<Adapter[] | Error> => {
         const url = this.url + this.path + (adapterType ? '?type=' + AdapterType.toString(adapterType) : '');
 
@@ -43,6 +46,8 @@ export default class AdapterService {
             .catch((err: Error) => new Error('Error on adapters get filtered: ' + err.name + err.message));
     };
 
+    // Get adapter with all details
+    // adapterID – Unique identifier in form of UUID representing a specific adapter.
     get = (adapterID: string): Promise<Adapter | Error> => {
         const url = this.url + this.path + '/' + adapterID;
 

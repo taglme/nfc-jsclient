@@ -31,8 +31,15 @@ export default class EventService {
         this.api = api;
     }
 
+    // Endpoint returns information about events.
     getAll = (): Promise<ListResponse<Event> | Error> => this.getFiltered(undefined, {});
 
+    // Endpoint returns information about events.
+    // adapterId – Adapter filter for events.
+    // filter.limit – Limit number of events in response.
+    // filter.offset – Offset from start of list.
+    // filter.sortBy – Sort field for list.
+    // filter.sortDir – Sort direction for list
     getFiltered = (adapterId: string | undefined, filter: EventFilter): Promise<ListResponse<Event> | Error> => {
         const url = this.url + this.path + buildEventsQueryParams(adapterId, filter);
 
@@ -45,6 +52,7 @@ export default class EventService {
             .catch((err: Error) => new Error('Error on events get filtered: ' + err.name + err.message));
     };
 
+    // Send event to service
     add = (e: NewEvent): Promise<Event | Error> => {
         const url = this.url + this.path;
 

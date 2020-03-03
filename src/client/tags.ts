@@ -35,6 +35,9 @@ export class TagService {
         this.api = api;
     }
 
+    // Get all adapter's tags
+    // adapterID – Unique identifier in form of UUID representing a specific adapter.
+    // tagType – Tags' type filter.
     getAll = (adapterId: string, tagType?: TagType): Promise<Tag[] | Error> => {
         const url =
             this.url +
@@ -50,6 +53,9 @@ export class TagService {
             .catch((err: Error) => new Error('Error on tags get all: ' + err.name + err.message));
     };
 
+    // Get all specified tag's details in adapter
+    // adapterID – Unique identifier in form of UUID representing a specific adapter.
+    // tagID – Unique identifier in form of UUID representing a specific tag.
     get = (adapterId: string, tagId: string): Promise<Tag | Error> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + tagId;
 

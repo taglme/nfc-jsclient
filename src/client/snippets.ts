@@ -30,8 +30,12 @@ export class SnippetService {
         this.api = api;
     }
 
+    // Snippets list endpoint returns information about all snippets. The response includes array of Snippets
     getAll = (): Promise<Snippet[] | Error> => this.getFiltered({});
 
+    // Snippets list endpoint returns information about all snippets. The response includes array of Snippets
+    // category – category filter for snippet.
+    // usage_id – usage_id filter for snippet
     getFiltered = (filter: SnippetFilter): Promise<Snippet[] | Error> => {
         const url = this.url + this.path + buildSnippetsQueryParams(filter);
 

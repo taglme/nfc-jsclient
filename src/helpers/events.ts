@@ -1,5 +1,6 @@
 import { EventFilter, EventName } from '../models/events';
 
+// Function builds events get query params
 export const buildEventsQueryParams = (adapterID: string | undefined, filter: EventFilter): string => {
     let queryParams = '';
 
