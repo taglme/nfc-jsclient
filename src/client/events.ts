@@ -31,9 +31,9 @@ export default class EventService {
         this.api = api;
     }
 
-    getAll = (): Promise<ListResponse<Event>> => this.getFiltered(undefined, {});
+    getAll = (): Promise<ListResponse<Event> | Error> => this.getFiltered(undefined, {});
 
-    getFiltered = (adapterId: string | undefined, filter: EventFilter): Promise<ListResponse<Event>> => {
+    getFiltered = (adapterId: string | undefined, filter: EventFilter): Promise<ListResponse<Event> | Error> => {
         const url = this.url + this.path + buildEventsQueryParams(adapterId, filter);
 
         return this.api
@@ -41,14 +41,16 @@ export default class EventService {
             .then<ListResponse<Event>>(resp => ({
                 pagInfo: new PaginationInfo(resp),
                 items: resp.items.map(e => new Event(e)),
-            }));
+            }))
+            .catch((err: Error) => new Error('Error on events get filtered: ' + err.name + err.message));
     };
 
-    add = (e: NewEvent): Promise<Event> => {
+    add = (e: NewEvent): Promise<Event | Error> => {
         const url = this.url + this.path;
 
         return this.api
             .call<EventResource>(({ post }) => post(url, { data: { e } }))
-            .then<Event>(resp => new Event(resp));
+            .then<Event>(resp => new Event(resp))
+            .catch((err: Error) => new Error('Error on event add: ' + err.name + err.message));
     };
 }

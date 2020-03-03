@@ -1,7 +1,7 @@
 import { AppInfoResource } from '../models/about';
 import { IApi } from '../interfaces';
 
-class AppInfo {
+export class AppInfo {
     name: string;
     version: string;
     commit: string;
@@ -41,8 +41,9 @@ export default class AboutService {
         this.api = api;
     }
 
-    get = (): Promise<AppInfo> =>
+    get = (): Promise<AppInfo | Error> =>
         this.api
             .call<AppInfoResource>(({ get }) => get(this.url + this.path, {}))
-            .then<AppInfo>(resp => new AppInfo(resp));
+            .then<AppInfo>(resp => new AppInfo(resp))
+            .catch((err: Error) => new Error('Error on about get: ' + err.name + err.message));
 }

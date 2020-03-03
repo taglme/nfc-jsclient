@@ -20,7 +20,10 @@ export interface Record {
 }
 
 export type NdefRecordPayloadResource = {
-
+    tnf: number;
+    type: string;
+    id: string;
+    payload: string;
 };
 
 export interface NdefRecordPayloadRawResource {

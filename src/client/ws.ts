@@ -1,7 +1,6 @@
 import { EventResource } from '../models/events';
 import { Event } from './events';
 import { Locale } from '../models/locales';
-import { JobStep } from './jobs';
 import { CommandString } from '../models/commands';
 
 type EventHandler = (e: Event) => any;
@@ -62,13 +61,13 @@ export default class WsService {
     public setLocale = (l: string): void => {
         const locale = Locale.parse(l);
 
-        const jobStep = new JobStep({
-            command: CommandString.SetLocale,
-            params: {
-                locale: Locale.toString(locale),
-            },
-        });
-
-        this.conn.send(JSON.stringify(jobStep));
+        this.conn.send(
+            JSON.stringify({
+                command: CommandString.SetLocale,
+                params: {
+                    locale: Locale.toString(locale),
+                },
+            }),
+        );
     };
 }

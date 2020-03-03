@@ -5,7 +5,7 @@ import { Tag } from './tags';
 import { Command, CommandStatus } from '../models/commands';
 import { IApi } from '../interfaces';
 
-class StepResult {
+export class StepResult {
     command: Command;
     params: object;
     output: object;
@@ -21,7 +21,7 @@ class StepResult {
     }
 }
 
-class JobRun {
+export class JobRun {
     runID: string;
     jobID: string;
     jobName: string;
@@ -62,9 +62,9 @@ export default class RunService {
         this.api = api;
     }
 
-    getAll = (adapterId: string): Promise<ListResponse<JobRun>> => this.getFiltered(adapterId, {});
+    getAll = (adapterId: string): Promise<ListResponse<JobRun> | Error> => this.getFiltered(adapterId, {});
 
-    getFiltered = (adapterId: string, filter: RunFilter): Promise<ListResponse<JobRun>> => {
+    getFiltered = (adapterId: string, filter: RunFilter): Promise<ListResponse<JobRun> | Error> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + buildJobRunsQueryParams(filter);
 
         return this.api
@@ -72,14 +72,16 @@ export default class RunService {
             .then<ListResponse<JobRun>>(resp => ({
                 pagInfo: new PaginationInfo(resp),
                 items: resp.items.map(j => new JobRun(j)),
-            }));
+            }))
+            .catch((err: Error) => new Error('Error on job runs get filtered: ' + err.name + err.message));
     };
 
-    get = (adapterId: string, runId: string): Promise<JobRun> => {
+    get = (adapterId: string, runId: string): Promise<JobRun | Error> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + runId;
 
         return this.api
-            .call<JobRunResource>(({ post }) => post(url, {}))
-            .then<JobRun>(resp => new JobRun(resp));
+            .call<JobRunResource>(({ get }) => get(url, {}))
+            .then<JobRun>(resp => new JobRun(resp))
+            .catch((err: Error) => new Error('Error on job run get: ' + err.name + err.message));
     };
 }

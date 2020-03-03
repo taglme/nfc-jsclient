@@ -1,13 +1,14 @@
 import { TagResource, TagShortResource, TagType } from '../models/tags';
 import { IApi } from '../interfaces';
+import { str2ab } from '../helpers/byte';
 
 export class Tag {
     tagID: string;
     type: TagType;
     adapterID: string;
     adapterName: string;
-    uid: any;
-    atr: any;
+    uid: Uint8Array;
+    atr: Uint8Array;
     product: string;
     vendor: string;
 
@@ -16,8 +17,8 @@ export class Tag {
         this.type = TagType.parse(r.type);
         this.adapterID = r.adapter_id;
         this.adapterName = r.adapter_name;
-        this.uid = r.uid; // TODO: deal with []byte
-        this.atr = r.atr; // TODO: deal with []byte
+        this.uid = str2ab(r.uid);
+        this.atr = str2ab(r.atr);
         this.product = r.product;
         this.vendor = r.vendor;
     }
@@ -34,22 +35,27 @@ export class TagService {
         this.api = api;
     }
 
-    getAll = (adapterId: string, tagType?: TagType): Promise<Tag[]> => {
+    getAll = (adapterId: string, tagType?: TagType): Promise<Tag[] | Error> => {
         const url =
-            this.url + this.basePath + '/' + adapterId + this.path + tagType
-                ? '?type=' + TagType.toString(tagType)
-                : '';
+            this.url +
+            this.basePath +
+            '/' +
+            adapterId +
+            this.path +
+            (tagType ? '?type=' + TagType.toString(tagType) : '');
 
         return this.api
             .call<TagShortResource[]>(({ get }) => get(url, {}))
-            .then<Tag[]>(resp => resp.map(a => new Tag(a)));
+            .then<Tag[]>(resp => resp.map(a => new Tag(a)))
+            .catch((err: Error) => new Error('Error on tags get all: ' + err.name + err.message));
     };
 
-    get = (adapterId: string, tagId: string): Promise<Tag> => {
+    get = (adapterId: string, tagId: string): Promise<Tag | Error> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + tagId;
 
         return this.api
             .call<TagResource>(({ get }) => get(url, {}))
-            .then<Tag>(resp => new Tag(resp));
+            .then<Tag>(resp => new Tag(resp))
+            .catch((err: Error) => new Error('Error on tags get: ' + err.name + err.message));
     };
 }

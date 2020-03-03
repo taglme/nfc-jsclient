@@ -12,13 +12,9 @@ export class JobStep {
         this.params = s.params;
         this.command = Command.parse(s.command);
     }
-
-    toResource = () => {
-
-    }
 }
 
-class Job {
+export class Job {
     jobID: string;
     jobName: string;
     status: JobStatus;
@@ -44,7 +40,7 @@ class Job {
         this.errorRuns = e.error_runs;
         this.expireAfter = e.expire_after;
         this.steps = e.steps.map(s => new JobStep(s));
-        this.createdAt == new Date(e.created_at);
+        this.createdAt = new Date(e.created_at);
     }
 }
 

@@ -1,5 +1,5 @@
 import { PaginationListResource } from './pagination';
-import { Command, CommandString } from './commands';
+import { CommandString } from './commands';
 import { NdefRecordResource } from './ndefconv';
 
 export enum JobStatus {

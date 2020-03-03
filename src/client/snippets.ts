@@ -2,10 +2,10 @@ import { SnippetCategory, SnippetFilter, SnippetResource } from '../models/snipp
 import { buildSnippetsQueryParams } from '../helpers/snippets';
 import { IApi } from '../interfaces';
 
-class Snippet {
+export class Snippet {
     name: string;
     category: SnippetCategory;
-    usageID: string;
+    usageId: string;
     usageName: string;
     description: string;
     code: string;
@@ -13,7 +13,7 @@ class Snippet {
     constructor(s: SnippetResource) {
         this.name = s.name;
         this.category = SnippetCategory.parse(s.category);
-        this.usageID = s.usage_id;
+        this.usageId = s.usage_id;
         this.usageName = s.usage_name;
         this.description = s.description;
         this.code = s.code;
@@ -30,13 +30,14 @@ export class SnippetService {
         this.api = api;
     }
 
-    getAll = (): Promise<Snippet[]> => this.getFiltered({});
+    getAll = (): Promise<Snippet[] | Error> => this.getFiltered({});
 
-    getFiltered = (filter: SnippetFilter): Promise<Snippet[]> => {
+    getFiltered = (filter: SnippetFilter): Promise<Snippet[] | Error> => {
         const url = this.url + this.path + buildSnippetsQueryParams(filter);
 
         return this.api
             .call<SnippetResource[]>(({ get }) => get(url, {}))
-            .then<Snippet[]>(resp => resp.map(a => new Snippet(a)));
+            .then<Snippet[]>(resp => resp.map(a => new Snippet(a)))
+            .catch((err: Error) => new Error('Error on snippets get filtered: ' + err.name + err.message));
     };
 }

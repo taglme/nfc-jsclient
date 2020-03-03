@@ -31,7 +31,7 @@ export enum CommandString {
 }
 
 export namespace Command {
-    export function toString(c: Command): string {
+    export function toString(c: Command): CommandString {
         const names = [
             CommandString.Unknown,
             CommandString.GetTags,

@@ -1,7 +1,7 @@
 import { AdapterResource, AdapterShortResource, AdapterType } from '../models/adapters';
 import { IApi } from '../interfaces';
 
-class Adapter {
+export class Adapter {
     href: string;
     name: string;
     type: AdapterType;
@@ -32,21 +32,23 @@ export default class AdapterService {
         this.api = api;
     }
 
-    getAll = (): Promise<Adapter[]> => this.getFiltered();
+    getAll = (): Promise<Adapter[] | Error> => this.getFiltered();
 
-    getFiltered = (adapterType?: AdapterType): Promise<Adapter[]> => {
-        const url = this.url + this.path + adapterType ? '?type=' + AdapterType.toString(adapterType) : '';
+    getFiltered = (adapterType?: AdapterType): Promise<Adapter[] | Error> => {
+        const url = this.url + this.path + (adapterType ? '?type=' + AdapterType.toString(adapterType) : '');
 
         return this.api
             .call<AdapterShortResource[]>(({ get }) => get(url, {}))
-            .then<Adapter[]>(resp => resp.map(a => new Adapter(a)));
+            .then<Adapter[]>(resp => resp.map(a => new Adapter(a)))
+            .catch((err: Error) => new Error('Error on adapters get filtered: ' + err.name + err.message));
     };
 
-    get = (adapterID: string): Promise<Adapter> => {
+    get = (adapterID: string): Promise<Adapter | Error> => {
         const url = this.url + this.path + '/' + adapterID;
 
         return this.api
             .call<AdapterResource>(({ get }) => get(url, {}))
-            .then<Adapter>(resp => new Adapter(resp));
+            .then<Adapter>(resp => new Adapter(resp))
+            .catch((err: Error) => new Error('Error on adapter get: ' + err.name + err.message));
     };
 }
