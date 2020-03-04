@@ -14,28 +14,19 @@ const sR: JobStepResource = {
 };
 
 const jR: JobResource = {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     job_id: 'string',
     kind: 'string',
     href: 'string',
-    // eslint-disable-next-line @typescript-eslint/camelcase
     job_name: 'string',
     status: JobStatus.toString(JobStatus.Active),
-    // eslint-disable-next-line @typescript-eslint/camelcase
     adapter_id: 'string',
-    // eslint-disable-next-line @typescript-eslint/camelcase
     adapter_name: 'string',
     repeat: 1,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     total_runs: 1,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     success_runs: 1,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     error_runs: 1,
-    // eslint-disable-next-line @typescript-eslint/camelcase
     expire_after: 1,
     steps: [sR],
-    // eslint-disable-next-line @typescript-eslint/camelcase
     created_at: '2020-03-03T10:12:03.881Z',
 };
 
@@ -114,10 +105,8 @@ describe('JobService', () => {
 
         const a = new JobService(api, 'url');
         a.add('aId', {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             job_name: 'name',
             repeat: 1,
-            // eslint-disable-next-line @typescript-eslint/camelcase
             expire_after: 1,
             steps: [sR],
         })
@@ -126,10 +115,8 @@ describe('JobService', () => {
 
         expect(mockAxios).toHaveBeenCalledWith({
             data: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 job_name: 'name',
                 repeat: 1,
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 expire_after: 1,
                 steps: [sR],
             },

@@ -81,13 +81,13 @@ export default class WsService {
 
     // Handle event
     // handler – Function which is called once event is emitted
-    onEvent = (h: () => void): void => {
+    onEvent = (h: (e: Event) => void): void => {
         this.eventHandlers.push(h);
     };
 
     // Handle error
     // h – Function which is called once error is emitted
-    onError = (h: () => void): void => {
+    onError = (h: (e: Error) => void): void => {
         this.errorHandlers.push(h);
     };
 }

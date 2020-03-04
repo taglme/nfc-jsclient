@@ -35,7 +35,6 @@ describe('AdapterService', () => {
         const responseObj = {
             data: [
                 {
-                    // eslint-disable-next-line @typescript-eslint/camelcase
                     adapter_id: 'test',
                     href: 'test',
                     name: 'test',
@@ -80,7 +79,6 @@ describe('AdapterService', () => {
 
         const responseObj = {
             data: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 adapter_id: 'test',
                 href: 'test',
                 name: 'test',
@@ -107,7 +105,6 @@ describe('AdapterService', () => {
 describe('Adapter', () => {
     it('Instance created', () => {
         const aR = {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_id: 'test',
             href: 'test',
             name: 'test',

@@ -13,14 +13,11 @@ afterEach(() => {
 });
 
 const tagR = {
-    // eslint-disable-next-line @typescript-eslint/camelcase
     tag_id: 'test',
     kind: 'test',
     href: 'test',
     type: TagType.toString(TagType.Bluetooth),
-    // eslint-disable-next-line @typescript-eslint/camelcase
     adapter_id: 'test',
-    // eslint-disable-next-line @typescript-eslint/camelcase
     adapter_name: 'test',
     uid: 'za7VbYcSQU2zRgGQXQAm/g==',
     atr: 'za7VbYcSQU2zRgGQXQAm/g==',
@@ -61,18 +58,13 @@ describe('RunService', () => {
                 offset: 1,
                 items: [
                     {
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         run_id: 'string',
                         kind: 'string',
                         href: 'string',
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         job_id: 'string',
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         job_name: 'string',
                         status: JobRunStatus.toString(JobRunStatus.Success),
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         adapter_id: 'string',
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         adapter_name: 'string',
                         tag: tagR,
                         results: [
@@ -84,7 +76,6 @@ describe('RunService', () => {
                                 message: 'string',
                             },
                         ] as StepResultResource[],
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         created_at: '2020-03-03T10:12:03.881Z',
                     },
                 ],
@@ -144,18 +135,13 @@ describe('RunService', () => {
 
         const responseObj = {
             data: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 run_id: 'string',
                 kind: 'string',
                 href: 'string',
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 job_id: 'string',
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 job_name: 'string',
                 status: JobRunStatus.toString(JobRunStatus.Success),
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 adapter_id: 'string',
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 adapter_name: 'string',
                 tag: tagR,
                 results: [
@@ -167,7 +153,6 @@ describe('RunService', () => {
                         message: 'string',
                     },
                 ] as StepResultResource[],
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 created_at: '2020-03-03T10:12:03.881Z',
             } as JobRunResource,
         };
@@ -200,18 +185,13 @@ describe('RunService', () => {
 describe('JobRun', () => {
     it('Instance created', () => {
         const eR = {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             run_id: 'string',
             kind: 'string',
             href: 'string',
-            // eslint-disable-next-line @typescript-eslint/camelcase
             job_id: 'string',
-            // eslint-disable-next-line @typescript-eslint/camelcase
             job_name: 'string',
             status: JobRunStatus.toString(JobRunStatus.Success),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_id: 'string',
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_name: 'string',
             tag: tagR,
             results: [
@@ -223,7 +203,6 @@ describe('JobRun', () => {
                     message: 'string',
                 },
             ] as StepResultResource[],
-            // eslint-disable-next-line @typescript-eslint/camelcase
             created_at: '2020-03-03T10:12:03.881Z',
         };
 
@@ -260,7 +239,6 @@ describe('StepResult', () => {
             status: CommandStatus.toString(CommandStatus.Success),
             message: 'string',
         };
-
 
         const s = new StepResult(sR);
         expect(s).toBeInstanceOf(StepResult);

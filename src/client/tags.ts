@@ -38,7 +38,7 @@ export class TagService {
     // Get all adapter's tags
     // adapterID – Unique identifier in form of UUID representing a specific adapter.
     // tagType – Tags' type filter.
-    getAll = (adapterId: string, tagType?: TagType): Promise<Tag[] | Error> => {
+    getAll = (adapterId: string, tagType?: TagType): Promise<Tag[]> => {
         const url =
             this.url +
             this.basePath +
@@ -50,18 +50,22 @@ export class TagService {
         return this.api
             .call<TagShortResource[]>(({ get }) => get(url, {}))
             .then<Tag[]>(resp => resp.map(a => new Tag(a)))
-            .catch((err: Error) => new Error('Error on tags get all: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on tags get all: ' + JSON.stringify(err));
+            });
     };
 
     // Get all specified tag's details in adapter
     // adapterID – Unique identifier in form of UUID representing a specific adapter.
     // tagID – Unique identifier in form of UUID representing a specific tag.
-    get = (adapterId: string, tagId: string): Promise<Tag | Error> => {
+    get = (adapterId: string, tagId: string): Promise<Tag> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + tagId;
 
         return this.api
             .call<TagResource>(({ get }) => get(url, {}))
             .then<Tag>(resp => new Tag(resp))
-            .catch((err: Error) => new Error('Error on tags get: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on tags get: ' + JSON.stringify(err));
+            });
     };
 }

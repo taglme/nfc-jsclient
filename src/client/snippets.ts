@@ -31,17 +31,19 @@ export class SnippetService {
     }
 
     // Snippets list endpoint returns information about all snippets. The response includes array of Snippets
-    getAll = (): Promise<Snippet[] | Error> => this.getFiltered({});
+    getAll = (): Promise<Snippet[]> => this.getFiltered({});
 
     // Snippets list endpoint returns information about all snippets. The response includes array of Snippets
     // category – category filter for snippet.
     // usage_id – usage_id filter for snippet
-    getFiltered = (filter: SnippetFilter): Promise<Snippet[] | Error> => {
+    getFiltered = (filter: SnippetFilter): Promise<Snippet[]> => {
         const url = this.url + this.path + buildSnippetsQueryParams(filter);
 
         return this.api
             .call<SnippetResource[]>(({ get }) => get(url, {}))
             .then<Snippet[]>(resp => resp.map(a => new Snippet(a)))
-            .catch((err: Error) => new Error('Error on snippets get filtered: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on snippets get filtered: ' + JSON.stringify(err));
+            });
     };
 }

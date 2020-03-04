@@ -57,7 +57,7 @@ export default class RunService {
     }
 
     // Get Run list for adapter with all details
-    getAll = (adapterId: string): Promise<ListResponse<JobRun> | Error> => this.getFiltered(adapterId, {});
+    getAll = (adapterId: string): Promise<ListResponse<JobRun>> => this.getFiltered(adapterId, {});
 
     // Get Run list for adapter with all details
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
@@ -67,7 +67,7 @@ export default class RunService {
     // filter.offset – Offset from start of list.
     // filter.sortBy – Sort field for list.
     // filter.sortDir – Sort direction for list
-    getFiltered = (adapterId: string, filter: RunFilter): Promise<ListResponse<JobRun> | Error> => {
+    getFiltered = (adapterId: string, filter: RunFilter): Promise<ListResponse<JobRun>> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + buildJobRunsQueryParams(filter);
 
         return this.api
@@ -76,18 +76,22 @@ export default class RunService {
                 pagInfo: new PaginationInfo(resp),
                 items: resp.items.map(j => new JobRun(j)),
             }))
-            .catch((err: Error) => new Error('Error on job runs get filtered: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on job runs get filtered: ' + JSON.stringify(err));
+            });
     };
 
     // Get all specefied jobrun's details
     // runId – Unique identifier in form of UUID representing a specific job run.
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
-    get = (adapterId: string, runId: string): Promise<JobRun | Error> => {
+    get = (adapterId: string, runId: string): Promise<JobRun> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + runId;
 
         return this.api
             .call<JobRunResource>(({ get }) => get(url, {}))
             .then<JobRun>(resp => new JobRun(resp))
-            .catch((err: Error) => new Error('Error on job run get: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on job run get: ' + JSON.stringify(err));
+            });
     };
 }

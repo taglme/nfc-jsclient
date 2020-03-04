@@ -65,7 +65,7 @@ export default class JobService {
     // filter.offset – Offset from start of list.
     // filter.sortBy – Sort field for list.
     // filter.sortDir – Sort direction for list
-    getFiltered = (adapterId: string, filter: JobFilter): Promise<ListResponse<Job> | Error> => {
+    getFiltered = (adapterId: string, filter: JobFilter): Promise<ListResponse<Job>> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + buildJobsQueryParams(filter);
 
         return this.api
@@ -74,30 +74,37 @@ export default class JobService {
                 pagInfo: new PaginationInfo(resp),
                 items: resp.items.map(j => new Job(j)),
             }))
-            .catch((err: Error) => new Error('Error on jobs get all: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on jobs get all: ' + JSON.stringify(err));
+            });
     };
 
     // Get Job list for adapter with all details
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
     // jobId – Unique identifier in form of UUID representing a specific job.
-    get = (adapterId: string, jobId: string): Promise<Job | Error> => {
+    get = (adapterId: string, jobId: string): Promise<Job> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + jobId;
 
         return this.api
             .call<JobResource>(({ get }) => get(url, {}))
             .then<Job>(resp => new Job(resp))
-            .catch((err: Error) => new Error('Error on job get: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on job get: ' + JSON.stringify(err));
+            });
     };
 
     // Send job with list of steps to adapter
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
-    add = (adapterId: string, J: NewJob): Promise<Job | Error> => {
+    add = (adapterId: string, J: NewJob): Promise<Job> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path;
 
         return this.api
             .call<JobResource>(({ post }) => post(url, { data: J }))
             .then<Job>(resp => new Job(resp))
-            .catch((err: Error) => new Error('Error on job add: ' + err.name + err.message));
+            .catch((err: Error) => {
+                console.log(err);
+                throw new Error('Error on job add: ' + JSON.stringify(err));
+            });
     };
 
     // Delete all jobs from adapter
@@ -107,7 +114,9 @@ export default class JobService {
 
         return this.api
             .call<{}>(({ del }) => del(url, {}))
-            .catch((err: Error) => new Error('Error on jobs delete all: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on jobs delete all: ' + JSON.stringify(err));
+            });
     };
 
     // Delete job from adapter
@@ -118,18 +127,22 @@ export default class JobService {
 
         return this.api
             .call<{}>(({ del }) => del(url, {}))
-            .catch((err: Error) => new Error('Error on job delete: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on job delete: ' + JSON.stringify(err));
+            });
     };
 
     // Update job status in adapter
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
     // jobId – Unique identifier in form of UUID representing a specific job.
-    updateStatus = (adapterId: string, jobId: string, status: JobStatus): Promise<Job | Error> => {
+    updateStatus = (adapterId: string, jobId: string, status: JobStatus): Promise<Job> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + jobId;
 
         return this.api
             .call<JobResource>(({ patch }) => patch(url, { data: { status: JobStatus.toString(status) } }))
             .then<Job>(resp => new Job(resp))
-            .catch((err: Error) => new Error('Error on job update status: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on job update status: ' + JSON.stringify(err));
+            });
     };
 }

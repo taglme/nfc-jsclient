@@ -36,14 +36,11 @@ describe('TagService', () => {
         const responseObj = {
             data: [
                 {
-                    // eslint-disable-next-line @typescript-eslint/camelcase
                     tag_id: 'test',
                     kind: 'test',
                     href: 'test',
                     type: TagType.toString(TagType.Bluetooth),
-                    // eslint-disable-next-line @typescript-eslint/camelcase
                     adapter_id: 'test',
-                    // eslint-disable-next-line @typescript-eslint/camelcase
                     adapter_name: 'test',
                     uid: 'za7VbYcSQU2zRgGQXQAm/g==',
                     atr: 'za7VbYcSQU2zRgGQXQAm/g==',
@@ -89,14 +86,14 @@ describe('TagService', () => {
 
         const responseObj = {
             data: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
+
                 tag_id: 'test',
                 kind: 'test',
                 href: 'test',
                 type: TagType.toString(TagType.Bluetooth),
-                // eslint-disable-next-line @typescript-eslint/camelcase
+
                 adapter_id: 'test',
-                // eslint-disable-next-line @typescript-eslint/camelcase
+
                 adapter_name: 'test',
                 uid: 'za7VbYcSQU2zRgGQXQAm/g==',
                 atr: 'za7VbYcSQU2zRgGQXQAm/g==',
@@ -124,14 +121,11 @@ describe('TagService', () => {
 describe('Tag', () => {
     it('Instance created', () => {
         const tagR = {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             tag_id: 'test',
             kind: 'test',
             href: 'test',
             type: TagType.toString(TagType.Bluetooth),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_id: 'test',
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_name: 'test',
             uid: 'za7VbYcSQU2zRgGQXQAm/g==',
             atr: 'za7VbYcSQU2zRgGQXQAm/g==',

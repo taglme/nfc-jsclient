@@ -33,27 +33,31 @@ export default class AdapterService {
     }
 
     // Adapters list endpoint returns information about all adapters. The response includes array of Adapters
-    getAll = (): Promise<Adapter[] | Error> => this.getFiltered();
+    getAll = (): Promise<Adapter[]> => this.getFiltered();
 
     // Adapters list endpoint returns information about all adapters. The response includes array of Adapters
     // adapterType – Adapters' type filter.
-    getFiltered = (adapterType?: AdapterType): Promise<Adapter[] | Error> => {
+    getFiltered = (adapterType?: AdapterType): Promise<Adapter[]> => {
         const url = this.url + this.path + (adapterType ? '?type=' + AdapterType.toString(adapterType) : '');
 
         return this.api
             .call<AdapterShortResource[]>(({ get }) => get(url, {}))
             .then<Adapter[]>(resp => resp.map(a => new Adapter(a)))
-            .catch((err: Error) => new Error('Error on adapters get filtered: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on adapters get filtered: ' + JSON.stringify(err));
+            });
     };
 
     // Get adapter with all details
     // adapterID – Unique identifier in form of UUID representing a specific adapter.
-    get = (adapterID: string): Promise<Adapter | Error> => {
+    get = (adapterID: string): Promise<Adapter> => {
         const url = this.url + this.path + '/' + adapterID;
 
         return this.api
             .call<AdapterResource>(({ get }) => get(url, {}))
             .then<Adapter>(resp => new Adapter(resp))
-            .catch((err: Error) => new Error('Error on adapter get: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on adapter get: ' + JSON.stringify(err));
+            });
     };
 }

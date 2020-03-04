@@ -42,9 +42,11 @@ export default class AboutService {
     }
 
     // Get fetching the about info
-    get = (): Promise<AppInfo | Error> =>
+    get = (): Promise<AppInfo> =>
         this.api
             .call<AppInfoResource>(({ get }) => get(this.url + this.path, {}))
             .then<AppInfo>(resp => new AppInfo(resp))
-            .catch((err: Error) => new Error('Error on about get: ' + err.name + err.message));
+            .catch((err: Error) => {
+                throw new Error('Error on about get: ' + JSON.stringify(err));
+            });
 }

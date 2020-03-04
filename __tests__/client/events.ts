@@ -40,15 +40,11 @@ describe('EventService', () => {
                 offset: 1,
                 items: [
                     {
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         event_id: 'string',
                         name: EventName.toString(EventName.TagDiscovery),
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         adapter_id: 'string',
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         adapter_name: 'string',
                         data: {},
-                        // eslint-disable-next-line @typescript-eslint/camelcase
                         created_at: '2020-03-03T10:12:03.881Z',
                     },
                 ],
@@ -85,7 +81,6 @@ describe('EventService', () => {
         const a = new EventService(api, 'url');
         a.add({
             name: EventName.toString(EventName.TagDiscovery),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_id: 'string',
             data: {},
         })
@@ -102,15 +97,11 @@ describe('EventService', () => {
 
         const responseObj = {
             data: {
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 event_id: 'string',
                 name: EventName.toString(EventName.TagDiscovery),
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 adapter_id: 'string',
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 adapter_name: 'string',
                 data: {},
-                // eslint-disable-next-line @typescript-eslint/camelcase
                 created_at: '2020-03-03T10:12:03.881Z',
             } as EventResource,
         };
@@ -132,15 +123,11 @@ describe('EventService', () => {
 describe('Event', () => {
     it('Instance created', () => {
         const eR = {
-            // eslint-disable-next-line @typescript-eslint/camelcase
             event_id: 'string',
             name: EventName.toString(EventName.TagDiscovery),
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_id: 'string',
-            // eslint-disable-next-line @typescript-eslint/camelcase
             adapter_name: 'string',
             data: {},
-            // eslint-disable-next-line @typescript-eslint/camelcase
             created_at: '2020-03-03T10:12:03.881Z',
         };
 
