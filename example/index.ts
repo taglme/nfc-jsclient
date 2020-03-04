@@ -14,23 +14,6 @@ const getAdapterId = (adapters: Adapter[]): string | undefined => {
 
 let testIterator = 0;
 const client = new NfcClient('http://127.0.0.1:3011', 'en');
-client.About.get().then(a => console.log('about info: ', a, '\n'));
-client.Ws.connect();
-client.Adapters.getAll().then(a => {
-    adapterId = getAdapterId(a);
-
-    if (adapterId) {
-        ArrayOfTestes(adapterId)[testIterator]();
-    }
-
-    console.log(
-        '\nadapters names: ',
-        a.map(({ name }) => name),
-        '\n',
-    );
-});
-
-console.log('Client has been connected to the WS\n');
 
 const ArrayOfTestes = (id: string) => [
     () =>
@@ -143,6 +126,24 @@ const ArrayOfTestes = (id: string) => [
             ],
         }),
 ];
+
+client.About.get().then(a => console.log('about info: ', a, '\n'));
+client.Ws.connect();
+client.Adapters.getAll().then(a => {
+    adapterId = getAdapterId(a);
+
+    if (adapterId) {
+        ArrayOfTestes(adapterId)[testIterator]();
+    }
+
+    console.log(
+        '\nadapters names: ',
+        a.map(({ name }) => name),
+        '\n',
+    );
+});
+
+console.log('Client has been connected to the WS\n');
 
 client.Ws.onEvent((e): void => {
     console.log('Event received: ', e.name, EventName.toString(e.name));
