@@ -3,27 +3,38 @@ import NfcClient from '../dist';
 import { EventName } from '../dist/models/events';
 import { CommandString } from '../dist/models/commands';
 import { NdefRecordPayloadType } from '../dist/models/ndefconv';
+import { Adapter } from '../src/client/adapters';
 
 // Below is written for testing purposes and  will be removed
 let adapterId = undefined;
 
+const getAdapterId = (adapters: Adapter[]): string | undefined => {
+    return adapters?.find(a => a.adapterId).adapterId ?? undefined;
+};
+
+let testIterator = 0;
 const client = new NfcClient('http://127.0.0.1:3011', 'en');
 client.About.get().then(a => console.log('about info: ', a, '\n'));
 client.Ws.connect();
 client.Adapters.getAll().then(a => {
-    adapterId = a[0] ? a[0].adapterId : undefined;
+    adapterId = getAdapterId(a);
+
+    if (adapterId) {
+        ArrayOfTestes(adapterId)[testIterator]();
+    }
+
     console.log(
         '\nadapters names: ',
         a.map(({ name }) => name),
         '\n',
     );
 });
+
 console.log('Client has been connected to the WS\n');
 
-let testIterator = 0;
-const ArrayOfTestes = [
+const ArrayOfTestes = (id: string) => [
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.SetPassword,
             repeat: 1,
             expire_after: 60,
@@ -37,7 +48,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.WriteNdef,
             repeat: 1,
             expire_after: 60,
@@ -58,7 +69,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.GetTags,
             repeat: 1,
             expire_after: 60,
@@ -70,7 +81,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.GetTags,
             repeat: 1,
             expire_after: 60,
@@ -82,7 +93,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.TransmitTag,
             repeat: 1,
             expire_after: 60,
@@ -96,7 +107,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.GetDump,
             repeat: 1,
             expire_after: 60,
@@ -108,7 +119,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.FormatDefault,
             repeat: 1,
             expire_after: 60,
@@ -120,7 +131,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add(adapterId, {
+        client.Jobs.add(id, {
             job_name: CommandString.RemovePassword,
             repeat: 1,
             expire_after: 60,
@@ -138,28 +149,28 @@ client.Ws.onEvent((e): void => {
     switch (e.name) {
         case EventName.AdapterDiscovery:
             console.log('Adapter discovery:', e.data.name, '\n\n');
-            client.Adapters.getAll().then(a =>
+            client.Adapters.getAll().then(a => {
                 console.log(
                     'adapters names: ',
                     a.map(({ name }) => name),
-                ),
-            );
+                );
+            });
         case EventName.AdapterRelease:
             console.log('Adapter released:', e.data.name, '\n\n');
-            client.Adapters.getAll().then(a =>
+            client.Adapters.getAll().then(a => {
                 console.log(
                     'adapters names: ',
                     a.map(({ name }) => name),
-                ),
-            );
+                );
+            });
             break;
         case EventName.JobFinished:
             console.log(`\n\n===> JOB ${e.data.job_name} HAS BEEN FINISHED: `, e.data, '\n\n');
             testIterator++;
             client.Adapters.getAll().then(a => {
-                adapterId = a[0] ? a[0].adapterId : undefined;
-                if (adapterId && testIterator < ArrayOfTestes.length) {
-                    ArrayOfTestes[testIterator]();
+                adapterId = getAdapterId(a);
+                if (adapterId && testIterator < ArrayOfTestes(adapterId).length) {
+                    ArrayOfTestes(adapterId)[testIterator]();
                 }
             });
             break;
@@ -178,5 +189,3 @@ client.Ws.onEvent((e): void => {
             break;
     }
 });
-
-ArrayOfTestes[testIterator]();
