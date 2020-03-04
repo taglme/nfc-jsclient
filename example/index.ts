@@ -5,23 +5,25 @@ import { CommandString } from '../dist/models/commands';
 import { NdefRecordPayloadType } from '../dist/models/ndefconv';
 
 // Below is written for testing purposes and  will be removed
+let adapterId = undefined;
 
 const client = new NfcClient('http://127.0.0.1:3011', 'en');
 client.About.get().then(a => console.log('about info: ', a, '\n'));
 client.Ws.connect();
-client.Adapters.getAll().then(a =>
+client.Adapters.getAll().then(a => {
+    adapterId = a[0] ? a[0].adapterId : undefined;
     console.log(
         '\nadapters names: ',
         a.map(({ name }) => name),
         '\n',
-    ),
-);
+    );
+});
 console.log('Client has been connected to the WS\n');
 
 let testIterator = 0;
 const ArrayOfTestes = [
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.SetPassword,
             repeat: 1,
             expire_after: 60,
@@ -35,7 +37,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.WriteNdef,
             repeat: 1,
             expire_after: 60,
@@ -56,7 +58,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.GetTags,
             repeat: 1,
             expire_after: 60,
@@ -68,7 +70,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.GetTags,
             repeat: 1,
             expire_after: 60,
@@ -80,7 +82,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.TransmitTag,
             repeat: 1,
             expire_after: 60,
@@ -94,7 +96,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.GetDump,
             repeat: 1,
             expire_after: 60,
@@ -106,7 +108,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.FormatDefault,
             repeat: 1,
             expire_after: 60,
@@ -118,7 +120,7 @@ const ArrayOfTestes = [
             ],
         }),
     () =>
-        client.Jobs.add('7f1d71b6-875a-463e-a835-707cebe1bc8c', {
+        client.Jobs.add(adapterId, {
             job_name: CommandString.RemovePassword,
             repeat: 1,
             expire_after: 60,
@@ -154,9 +156,12 @@ client.Ws.onEvent((e): void => {
         case EventName.JobFinished:
             console.log(`\n\n===> JOB ${e.data.job_name} HAS BEEN FINISHED: `, e.data, '\n\n');
             testIterator++;
-            if (testIterator < ArrayOfTestes.length) {
-                ArrayOfTestes[testIterator]();
-            }
+            client.Adapters.getAll().then(a => {
+                adapterId = a[0] ? a[0].adapterId : undefined;
+                if (adapterId && testIterator < ArrayOfTestes.length) {
+                    ArrayOfTestes[testIterator]();
+                }
+            });
             break;
         case EventName.JobActivated:
             console.log(`\n\n===> JOB ${e.data.job_name} HAS BEEN ACTIVATED: `, e.data, '\n\n');
