@@ -1,7 +1,16 @@
 import PaginationInfo, { ListResponse } from '../models/pagination';
-import { JobFilter, JobResource, JobStatus, JobStepResource, NewJob, JobListResource } from '../models/jobs';
+import {
+    JobFilter,
+    JobResource,
+    JobStatus,
+    JobStepResource,
+    NewJob,
+    JobListResource,
+    ParamsPassword,
+    ParamsTxBytes,
+} from '../models/jobs';
 import { buildJobsQueryParams } from '../helpers/jobs';
-import { Command } from '../models/commands';
+import { Command, CommandString } from '../models/commands';
 import { IApi } from '../interfaces';
 
 export class JobStep {
@@ -98,8 +107,27 @@ export default class JobService {
     add = (adapterId: string, J: NewJob): Promise<Job> => {
         const url = this.url + this.basePath + '/' + adapterId + this.path;
 
+        const steps = J.steps.map(s => {
+            const step = s;
+
+            switch (step.command) {
+                case CommandString.AuthPassword:
+                case CommandString.SetPassword:
+                    step.params.password = btoa((s.params as ParamsPassword).password);
+                    break;
+                case CommandString.TransmitTag:
+                case CommandString.TransmitAdapter:
+                    step.params.tx_bytes = btoa((s.params as ParamsTxBytes).tx_bytes);
+                    break;
+                default:
+                    break;
+            }
+
+            return step;
+        });
+
         return this.api
-            .call<JobResource>(({ post }) => post(url, { data: J }))
+            .call<JobResource>(({ post }) => post(url, { data: { ...J, steps } }))
             .then<Job>(resp => new Job(resp))
             .catch((err: Error) => {
                 console.log(err);

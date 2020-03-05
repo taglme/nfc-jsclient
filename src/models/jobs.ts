@@ -28,47 +28,68 @@ export namespace JobStatus {
     }
 }
 
+export type ParamsTxBytes = {
+    tx_bytes: string;
+};
+
+export type ParamsNdefMessages = {
+    message: NdefRecordResource[];
+};
+
+export type ParamsPassword = {
+    password: string;
+};
+
+export type ParamsLocale = { locale: string };
+
+export type JobStepParamType = keyof JobStepResourceParamsMap;
+export type JobStepResourceParamsMap = {
+    [CommandString.Unknown]: {};
+    [CommandString.GetTags]: {};
+    [CommandString.ReadNdef]: {};
+    [CommandString.FormatDefault]: {};
+    [CommandString.LockPermanent]: {};
+    [CommandString.GetDump]: {};
+    [CommandString.TransmitAdapter]: ParamsTxBytes;
+    [CommandString.TransmitTag]: ParamsTxBytes;
+    [CommandString.WriteNdef]: ParamsNdefMessages;
+    [CommandString.SetPassword]: ParamsPassword;
+    [CommandString.AuthPassword]: ParamsPassword;
+    [CommandString.SetLocale]: ParamsLocale;
+    [CommandString.RemovePassword]: {};
+};
+
 export type JobStepResource =
     | {
           command: CommandString.GetTags;
-          params: {};
+          params: JobStepResourceParamsMap[CommandString.GetTags];
       }
     | {
           command: CommandString.TransmitAdapter;
-          params: {
-              tx_bytes: string;
-          };
+          params: JobStepResourceParamsMap[CommandString.TransmitAdapter];
       }
     | {
           command: CommandString.TransmitTag;
-          params: {
-              tx_bytes: string;
-          };
+          params: JobStepResourceParamsMap[CommandString.TransmitTag];
       }
     | {
           command: CommandString.WriteNdef;
-          params: {
-              message: NdefRecordResource[];
-          };
+          params: JobStepResourceParamsMap[CommandString.WriteNdef];
       }
-    | { command: CommandString.ReadNdef; params: {} }
-    | { command: CommandString.FormatDefault; params: {} }
-    | { command: CommandString.LockPermanent; params: {} }
+    | { command: CommandString.ReadNdef; params: JobStepResourceParamsMap[CommandString.ReadNdef] }
+    | { command: CommandString.FormatDefault; params: JobStepResourceParamsMap[CommandString.FormatDefault] }
+    | { command: CommandString.LockPermanent; params: JobStepResourceParamsMap[CommandString.LockPermanent] }
     | {
           command: CommandString.SetPassword;
-          params: {
-              password: string;
-          };
+          params: JobStepResourceParamsMap[CommandString.SetPassword];
       }
-    | { command: CommandString.RemovePassword; params: {} }
+    | { command: CommandString.RemovePassword; params: JobStepResourceParamsMap[CommandString.RemovePassword] }
     | {
           command: CommandString.AuthPassword;
-          params: {
-              password: string;
-          };
+          params: JobStepResourceParamsMap[CommandString.AuthPassword];
       }
-    | { command: CommandString.GetDump; params: {} }
-    | { command: CommandString.SetLocale; params: { locale: string } };
+    | { command: CommandString.GetDump; params: JobStepResourceParamsMap[CommandString.GetDump] }
+    | { command: CommandString.SetLocale; params: JobStepResourceParamsMap[CommandString.SetLocale] };
 
 export interface JobResource {
     job_id: string;

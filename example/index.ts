@@ -18,20 +18,6 @@ const client = new NfcClient('http://127.0.0.1:3011', 'en');
 const ArrayOfTestes = (id: string) => [
     () =>
         client.Jobs.add(id, {
-            job_name: CommandString.SetPassword,
-            repeat: 1,
-            expire_after: 60,
-            steps: [
-                {
-                    command: CommandString.SetPassword,
-                    params: {
-                        password: btoa('0x11, 0x11, 0x11, 0x11'),
-                    },
-                },
-            ],
-        }),
-    () =>
-        client.Jobs.add(id, {
             job_name: CommandString.WriteNdef,
             repeat: 1,
             expire_after: 60,
@@ -115,10 +101,30 @@ const ArrayOfTestes = (id: string) => [
         }),
     () =>
         client.Jobs.add(id, {
+            job_name: CommandString.SetPassword,
+            repeat: 1,
+            expire_after: 60,
+            steps: [
+                {
+                    command: CommandString.SetPassword,
+                    params: {
+                        password: '0x11, 0x11, 0x11, 0x11',
+                    },
+                },
+            ],
+        }),
+    () =>
+        client.Jobs.add(id, {
             job_name: CommandString.RemovePassword,
             repeat: 1,
             expire_after: 60,
             steps: [
+                {
+                    command: CommandString.AuthPassword,
+                    params: {
+                        password: '0x11, 0x11, 0x11, 0x11',
+                    },
+                },
                 {
                     command: CommandString.RemovePassword,
                     params: {},
