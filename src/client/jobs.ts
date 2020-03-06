@@ -12,6 +12,7 @@ import {
 import { buildJobsQueryParams } from '../helpers/jobs';
 import { Command, CommandString } from '../models/commands';
 import { IApi } from '../interfaces';
+import { hexToBase64 } from '../helpers/base64';
 
 export class JobStep {
     command: Command;
@@ -113,11 +114,11 @@ export default class JobService {
             switch (step.command) {
                 case CommandString.AuthPassword:
                 case CommandString.SetPassword:
-                    step.params.password = btoa((s.params as ParamsPassword).password);
+                    step.params.password = hexToBase64((s.params as ParamsPassword).password);
                     break;
                 case CommandString.TransmitTag:
                 case CommandString.TransmitAdapter:
-                    step.params.tx_bytes = btoa((s.params as ParamsTxBytes).tx_bytes);
+                    step.params.tx_bytes = hexToBase64((s.params as ParamsTxBytes).tx_bytes);
                     break;
                 default:
                     break;
