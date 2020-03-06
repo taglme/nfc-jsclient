@@ -5,7 +5,6 @@ import { CommandString } from '../dist/models/commands';
 import { NdefRecordPayloadType } from '../dist/models/ndefconv';
 import { Adapter } from '../src/client/adapters';
 
-// Below is written for testing purposes and  will be removed
 let adapterId = undefined;
 
 const getAdapterId = (adapters: Adapter[]): string | undefined => {
