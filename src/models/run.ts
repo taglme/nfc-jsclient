@@ -1,6 +1,7 @@
 import { PaginationListResource } from './pagination';
 import { TagResource } from './tags';
 import { CommandOutputResourceMap, CommandString } from './commands';
+import { JobStepResourceParamsMap } from './jobs';
 
 export enum JobRunStatus {
     Unknown,
@@ -33,40 +34,69 @@ export namespace JobRunStatus {
 }
 
 export type StepResultResource = {
-    params: object;
     status: string;
     message: string;
 } & (
     | {
           command: CommandString.GetTags;
           output: CommandOutputResourceMap[CommandString.GetTags];
+          params: JobStepResourceParamsMap[CommandString.GetTags];
       }
     | {
           command: CommandString.TransmitAdapter;
           output: CommandOutputResourceMap[CommandString.TransmitAdapter];
+          params: JobStepResourceParamsMap[CommandString.TransmitAdapter];
       }
     | {
           command: CommandString.TransmitTag;
           output: CommandOutputResourceMap[CommandString.TransmitTag];
+          params: JobStepResourceParamsMap[CommandString.TransmitTag];
       }
     | {
           command: CommandString.WriteNdef;
           output: CommandOutputResourceMap[CommandString.WriteNdef];
+          params: JobStepResourceParamsMap[CommandString.WriteNdef];
       }
-    | { command: CommandString.ReadNdef; output: CommandOutputResourceMap[CommandString.ReadNdef] }
-    | { command: CommandString.FormatDefault; output: CommandOutputResourceMap[CommandString.FormatDefault] }
-    | { command: CommandString.LockPermanent; output: CommandOutputResourceMap[CommandString.LockPermanent] }
+    | {
+          command: CommandString.ReadNdef;
+          output: CommandOutputResourceMap[CommandString.ReadNdef];
+          params: JobStepResourceParamsMap[CommandString.ReadNdef];
+      }
+    | {
+          command: CommandString.FormatDefault;
+          output: CommandOutputResourceMap[CommandString.FormatDefault];
+          params: JobStepResourceParamsMap[CommandString.FormatDefault];
+      }
+    | {
+          command: CommandString.LockPermanent;
+          output: CommandOutputResourceMap[CommandString.LockPermanent];
+          params: JobStepResourceParamsMap[CommandString.LockPermanent];
+      }
     | {
           command: CommandString.SetPassword;
           output: CommandOutputResourceMap[CommandString.SetPassword];
+          params: JobStepResourceParamsMap[CommandString.SetPassword];
       }
-    | { command: CommandString.RemovePassword; output: CommandOutputResourceMap[CommandString.RemovePassword] }
+    | {
+          command: CommandString.RemovePassword;
+          output: CommandOutputResourceMap[CommandString.RemovePassword];
+          params: JobStepResourceParamsMap[CommandString.RemovePassword];
+      }
     | {
           command: CommandString.AuthPassword;
           output: CommandOutputResourceMap[CommandString.AuthPassword];
+          params: JobStepResourceParamsMap[CommandString.AuthPassword];
       }
-    | { command: CommandString.GetDump; output: CommandOutputResourceMap[CommandString.GetDump] }
-    | { command: CommandString.SetLocale; output: CommandOutputResourceMap[CommandString.SetLocale] }
+    | {
+          command: CommandString.GetDump;
+          output: CommandOutputResourceMap[CommandString.GetDump];
+          params: JobStepResourceParamsMap[CommandString.GetDump];
+      }
+    | {
+          command: CommandString.SetLocale;
+          output: CommandOutputResourceMap[CommandString.SetLocale];
+          params: JobStepResourceParamsMap[CommandString.SetLocale];
+      }
 );
 
 export interface JobRunResource {
