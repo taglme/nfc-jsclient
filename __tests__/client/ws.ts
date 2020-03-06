@@ -16,12 +16,12 @@ afterEach(() => {
 
 describe('WsService', () => {
     it('Instance created', async () => {
-        const a = new WsService('http://localhost:1234');
+        const a = new WsService('ws://localhost:1234');
         expect(a).toBeInstanceOf(WsService);
     });
 
     it('Connect & isConnected & disconnect', async () => {
-        const a = new WsService('http://localhost:1234');
+        const a = new WsService('ws://localhost:1234');
         expect(a.isConnected()).toEqual(false);
         a.connect();
         await server.connected;
@@ -31,7 +31,7 @@ describe('WsService', () => {
     });
 
     it('en', async () => {
-        const a = new WsService('http://localhost:1234');
+        const a = new WsService('ws://localhost:1234');
         expect(a.isConnected()).toEqual(false);
         a.connect();
         await server.connected;
