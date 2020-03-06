@@ -14,7 +14,7 @@ export default class WsService {
     private conn?: WebSocket;
 
     constructor(url: string) {
-        this.url = url.replace(/(http(s)?:)/g, 'ws:');
+        this.url = url;
         this.errorHandlers = [];
         this.eventHandlers = [];
         this.conn = undefined;

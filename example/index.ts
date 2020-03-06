@@ -13,7 +13,7 @@ const getAdapterId = (adapters: Adapter[]): string | undefined => {
 };
 
 let testIterator = 0;
-const client = new NfcClient('http://127.0.0.1:3011', 'en');
+const client = new NfcClient('127.0.0.1:3011', 'en');
 
 const ArrayOfTestes = (id: string) => [
     () =>

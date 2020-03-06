@@ -21,15 +21,18 @@ export default class Client {
     Ws: WsService;
 
     constructor(url: string, locale: string, api: IApi) {
+        const httpUrl = 'http://' + url;
+        const wsUrl = 'ws://' + httpUrl;
+
         this.locale = locale;
         this.api = api;
-        this.About = new AboutService(api, url);
-        this.Adapters = new AdapterService(api, url);
-        this.Events = new EventService(api, url);
-        this.Snippets = new SnippetService(api, url);
-        this.Tags = new TagService(api, url);
-        this.Runs = new RunService(api, url);
-        this.Jobs = new JobService(api, url);
-        this.Ws = new WsService(url);
+        this.About = new AboutService(api, httpUrl);
+        this.Adapters = new AdapterService(api, httpUrl);
+        this.Events = new EventService(api, httpUrl);
+        this.Snippets = new SnippetService(api, httpUrl);
+        this.Tags = new TagService(api, httpUrl);
+        this.Runs = new RunService(api, httpUrl);
+        this.Jobs = new JobService(api, httpUrl);
+        this.Ws = new WsService(wsUrl);
     }
 }
