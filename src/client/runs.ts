@@ -2,13 +2,32 @@ import PaginationInfo, { ListResponse } from '../models/pagination';
 import { JobRunResource, JobRunStatus, JobRunListResource, RunFilter, StepResultResource } from '../models/run';
 import { buildJobRunsQueryParams } from '../helpers/runs';
 import { Tag } from './tags';
-import { Command, CommandStatus } from '../models/commands';
+import {
+    AuthPasswordOutputResource,
+    Command,
+    CommandStatus,
+    CommandString,
+    GetDumpOutputResource,
+    GetTagsOutputResource,
+    ReadNdefOutputResource,
+    TransmitAdapterOutputResource,
+    TransmitTagOutputResource,
+} from '../models/commands';
 import { IApi } from '../interfaces';
+import { base64ToHex } from '../helpers/base64';
+import { ParamsLocale, ParamsNdefMessages, ParamsPassword, ParamsTxBytes } from '../models/jobs';
 
 export class StepResult {
     command: Command;
-    params: object;
-    output: object;
+    params: ParamsTxBytes | ParamsNdefMessages | ParamsPassword | ParamsLocale | {};
+    output:
+        | GetTagsOutputResource
+        | ReadNdefOutputResource
+        | GetDumpOutputResource
+        | TransmitAdapterOutputResource
+        | TransmitTagOutputResource
+        | AuthPasswordOutputResource
+        | {};
     status: CommandStatus;
     message: string;
 
@@ -18,6 +37,33 @@ export class StepResult {
         this.output = s.output;
         this.status = CommandStatus.parse(s.status);
         this.message = s.message;
+
+        switch (s.command) {
+            case CommandString.SetPassword:
+                (this.params as ParamsPassword).password = base64ToHex((s.params as ParamsPassword).password);
+                break;
+            case CommandString.TransmitTag:
+            case CommandString.TransmitAdapter:
+                (this.params as ParamsTxBytes).tx_bytes = base64ToHex((s.params as ParamsTxBytes).tx_bytes);
+
+                if (s.output) {
+                    (this.output as TransmitTagOutputResource | TransmitAdapterOutputResource).rx_bytes = base64ToHex(
+                        (s.output as TransmitTagOutputResource | TransmitAdapterOutputResource).rx_bytes,
+                    );
+                }
+                break;
+            case CommandString.AuthPassword:
+                (this.params as ParamsPassword).password = base64ToHex((s.params as ParamsPassword).password);
+
+                if (s.output) {
+                    (this.output as AuthPasswordOutputResource).ack = base64ToHex(
+                        (s.output as AuthPasswordOutputResource).ack,
+                    );
+                }
+                break;
+            default:
+                break;
+        }
     }
 }
 

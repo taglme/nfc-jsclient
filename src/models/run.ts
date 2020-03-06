@@ -1,5 +1,6 @@
 import { PaginationListResource } from './pagination';
 import { TagResource } from './tags';
+import { CommandOutputResourceMap, CommandString } from './commands';
 
 export enum JobRunStatus {
     Unknown,
@@ -31,13 +32,42 @@ export namespace JobRunStatus {
     }
 }
 
-export interface StepResultResource {
-    command: string;
+export type StepResultResource = {
     params: object;
-    output: object;
     status: string;
     message: string;
-}
+} & (
+    | {
+          command: CommandString.GetTags;
+          output: CommandOutputResourceMap[CommandString.GetTags];
+      }
+    | {
+          command: CommandString.TransmitAdapter;
+          output: CommandOutputResourceMap[CommandString.TransmitAdapter];
+      }
+    | {
+          command: CommandString.TransmitTag;
+          output: CommandOutputResourceMap[CommandString.TransmitTag];
+      }
+    | {
+          command: CommandString.WriteNdef;
+          output: CommandOutputResourceMap[CommandString.WriteNdef];
+      }
+    | { command: CommandString.ReadNdef; output: CommandOutputResourceMap[CommandString.ReadNdef] }
+    | { command: CommandString.FormatDefault; output: CommandOutputResourceMap[CommandString.FormatDefault] }
+    | { command: CommandString.LockPermanent; output: CommandOutputResourceMap[CommandString.LockPermanent] }
+    | {
+          command: CommandString.SetPassword;
+          output: CommandOutputResourceMap[CommandString.SetPassword];
+      }
+    | { command: CommandString.RemovePassword; output: CommandOutputResourceMap[CommandString.RemovePassword] }
+    | {
+          command: CommandString.AuthPassword;
+          output: CommandOutputResourceMap[CommandString.AuthPassword];
+      }
+    | { command: CommandString.GetDump; output: CommandOutputResourceMap[CommandString.GetDump] }
+    | { command: CommandString.SetLocale; output: CommandOutputResourceMap[CommandString.SetLocale] }
+);
 
 export interface JobRunResource {
     run_id: string;

@@ -3,6 +3,8 @@ export const hexToBase64 = (str: string): string =>
         String.fromCharCode.apply(
             null,
             str
+                .replace(/,/g, '')
+                .replace(/0x/g, '')
                 .replace(/\r|\n/g, '')
                 .replace(/([\da-fA-F]{2}) ?/g, '0x$1 ')
                 .replace(/ +$/, '')
@@ -22,5 +24,5 @@ export const base64ToHex = (str: string): string => {
         hex[hex.length] = tmp;
     }
 
-    return hex.join(' ');
+    return `0x${hex.join(' 0x')}`;
 };

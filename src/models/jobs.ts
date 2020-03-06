@@ -42,7 +42,6 @@ export type ParamsPassword = {
 
 export type ParamsLocale = { locale: string };
 
-export type JobStepParamType = keyof JobStepResourceParamsMap;
 export type JobStepResourceParamsMap = {
     [CommandString.Unknown]: {};
     [CommandString.GetTags]: {};
@@ -117,10 +116,6 @@ export interface NewJob {
     repeat: number;
     expire_after: number;
     steps: JobStepResource[];
-}
-
-export interface JobStatusUpdate {
-    status: string;
 }
 
 export interface JobFilter {

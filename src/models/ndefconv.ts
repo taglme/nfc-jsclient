@@ -1,18 +1,67 @@
-import { CommandString } from './commands';
-
-export type NdefRecordPayloadResource = {
-    tnf?: number;
-    type?: string;
-    id?: string;
-    payload?: string;
-    url?: string;
-};
-
 export interface NdefRecordPayloadRawResource {
     tnf: number;
     type: string;
     id: string;
     payload: string;
+}
+
+export interface NdefRecordPayloadTextResource {
+    text: string;
+    lang: string;
+}
+
+export interface NdefRecordPayloadTextResource {
+    text: string;
+    lang: string;
+}
+
+export interface NdefRecordPayloadUrlResource {
+    url: string;
+}
+
+export interface NdefRecordPayloadUriResource {
+    uri: string;
+}
+
+export interface NdefRecordPayloadVcardResource {
+    address_city: string;
+    address_country: string;
+    address_postal_code: string;
+    address_region: string;
+    address_street: string;
+    email: string;
+    first_name: string;
+    last_name: string;
+    organization: string;
+    phone_cell: string;
+    phone_home: string;
+    phone_work: string;
+    title: string;
+    site: string;
+}
+
+export interface NdefRecordPayloadMimeResource {
+    type: string;
+    format: string;
+    content: string;
+}
+
+export interface NdefRecordPayloadPhoneResource {
+    phone_number: string;
+}
+
+export interface NdefRecordPayloadGeoResource {
+    latitude: string;
+    longitude: string;
+}
+
+export interface NdefRecordPayloadAarResource {
+    package_name: string;
+}
+
+export interface NdefRecordPayloadPosterResource {
+    title: string;
+    uri: string;
 }
 
 export enum NdefRecordPayloadType {
@@ -69,23 +118,23 @@ export namespace NdefRecordPayloadType {
         switch (s) {
             case NdefRecordPayloadTypeString.Raw:
                 return NdefRecordPayloadType.Raw;
-            case CommandString.TransmitAdapter:
+            case NdefRecordPayloadTypeString.Url:
                 return NdefRecordPayloadType.Url;
-            case CommandString.TransmitTag:
+            case NdefRecordPayloadTypeString.Text:
                 return NdefRecordPayloadType.Text;
-            case CommandString.WriteNdef:
+            case NdefRecordPayloadTypeString.Uri:
                 return NdefRecordPayloadType.Uri;
-            case CommandString.ReadNdef:
+            case NdefRecordPayloadTypeString.Vcard:
                 return NdefRecordPayloadType.Vcard;
-            case CommandString.FormatDefault:
+            case NdefRecordPayloadTypeString.Mime:
                 return NdefRecordPayloadType.Mime;
-            case CommandString.LockPermanent:
+            case NdefRecordPayloadTypeString.Phone:
                 return NdefRecordPayloadType.Phone;
-            case CommandString.SetPassword:
+            case NdefRecordPayloadTypeString.Geo:
                 return NdefRecordPayloadType.Geo;
-            case CommandString.RemovePassword:
+            case NdefRecordPayloadTypeString.Aar:
                 return NdefRecordPayloadType.Aar;
-            case CommandString.AuthPassword:
+            case NdefRecordPayloadTypeString.Poster:
                 return NdefRecordPayloadType.Poster;
         }
 
@@ -93,10 +142,60 @@ export namespace NdefRecordPayloadType {
     }
 }
 
-export interface NdefRecordResource {
-    type: string;
-    data: NdefRecordPayloadResource;
-}
+export type NdefRecordPayloadResourceMap = {
+    [NdefRecordPayloadTypeString.Raw]: NdefRecordPayloadRawResource;
+    [NdefRecordPayloadTypeString.Url]: NdefRecordPayloadUrlResource;
+    [NdefRecordPayloadTypeString.Text]: NdefRecordPayloadTextResource;
+    [NdefRecordPayloadTypeString.Vcard]: NdefRecordPayloadVcardResource;
+    [NdefRecordPayloadTypeString.Mime]: NdefRecordPayloadMimeResource;
+    [NdefRecordPayloadTypeString.Uri]: NdefRecordPayloadUriResource;
+    [NdefRecordPayloadTypeString.Phone]: NdefRecordPayloadPhoneResource;
+    [NdefRecordPayloadTypeString.Geo]: NdefRecordPayloadGeoResource;
+    [NdefRecordPayloadTypeString.Aar]: NdefRecordPayloadAarResource;
+    [NdefRecordPayloadTypeString.Poster]: NdefRecordPayloadPosterResource;
+};
+
+export type NdefRecordResource =
+    | {
+          type: NdefRecordPayloadTypeString.Raw;
+          data: NdefRecordPayloadRawResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Url;
+          data: NdefRecordPayloadUrlResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Text;
+          data: NdefRecordPayloadTextResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Vcard;
+          data: NdefRecordPayloadVcardResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Mime;
+          data: NdefRecordPayloadMimeResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Uri;
+          data: NdefRecordPayloadUriResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Phone;
+          data: NdefRecordPayloadPhoneResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Geo;
+          data: NdefRecordPayloadGeoResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Aar;
+          data: NdefRecordPayloadAarResource;
+      }
+    | {
+          type: NdefRecordPayloadTypeString.Poster;
+          data: NdefRecordPayloadPosterResource;
+      };
 
 export interface NdefResource {
     read_only: boolean;

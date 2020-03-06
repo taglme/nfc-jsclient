@@ -8,19 +8,34 @@ import {
     JobListResource,
     ParamsPassword,
     ParamsTxBytes,
+    ParamsNdefMessages,
+    ParamsLocale,
 } from '../models/jobs';
 import { buildJobsQueryParams } from '../helpers/jobs';
 import { Command, CommandString } from '../models/commands';
 import { IApi } from '../interfaces';
-import { hexToBase64 } from '../helpers/base64';
+import { hexToBase64, base64ToHex } from '../helpers/base64';
 
 export class JobStep {
     command: Command;
-    params: object;
+    params: ParamsTxBytes | ParamsNdefMessages | ParamsPassword | ParamsLocale | {};
 
     constructor(s: JobStepResource) {
         this.params = s.params;
         this.command = Command.parse(s.command);
+
+        switch (s.command) {
+            case CommandString.AuthPassword:
+            case CommandString.SetPassword:
+                (this.params as ParamsPassword).password = base64ToHex((s.params as ParamsPassword).password);
+                break;
+            case CommandString.TransmitTag:
+            case CommandString.TransmitAdapter:
+                (this.params as ParamsTxBytes).tx_bytes = base64ToHex((s.params as ParamsTxBytes).tx_bytes);
+                break;
+            default:
+                break;
+        }
     }
 }
 

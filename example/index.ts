@@ -2,8 +2,9 @@
 import NfcClient from '../dist';
 import { EventName } from '../dist/models/events';
 import { CommandString } from '../dist/models/commands';
-import { NdefRecordPayloadType } from '../dist/models/ndefconv';
 import { Adapter } from '../src/client/adapters';
+import { NdefRecordPayloadTypeString } from '../src/models/ndefconv';
+import { JobRun } from '../src/client/runs';
 
 let adapterId = undefined;
 
@@ -26,7 +27,7 @@ const ArrayOfTestes = (id: string) => [
                     params: {
                         message: [
                             {
-                                type: NdefRecordPayloadType.toString(NdefRecordPayloadType.Url),
+                                type: NdefRecordPayloadTypeString.Url,
                                 data: {
                                     url: 'https://tagl.me',
                                 },
@@ -50,7 +51,7 @@ const ArrayOfTestes = (id: string) => [
         }),
     () =>
         client.Jobs.add(id, {
-            job_name: CommandString.GetTags,
+            job_name: CommandString.ReadNdef,
             repeat: 1,
             expire_after: 60,
             steps: [
@@ -186,10 +187,11 @@ client.Ws.onEvent((e): void => {
         case EventName.TagDiscovery:
         case EventName.TagRelease:
         case EventName.JobSubmitted:
+            console.log(EventName.toString(e.name), e.data);
         case EventName.RunStarted:
         case EventName.RunSuccess:
         case EventName.RunError:
-            console.log(EventName.toString(e.name), e.data);
+            console.log(EventName.toString(e.name), new JobRun(e.data));
             break;
         default:
             break;

@@ -1,3 +1,6 @@
+import { TagResource } from './tags';
+import { NdefResource } from './ndefconv';
+
 export enum Command {
     Unknown,
     GetTags,
@@ -112,3 +115,49 @@ export namespace CommandStatus {
         return CommandStatus.Unknown;
     }
 }
+
+export interface GetTagsOutputResource {
+    tags: TagResource[];
+}
+
+export interface TransmitAdapterOutputResource {
+    rx_bytes: string;
+}
+
+export interface TransmitTagOutputResource {
+    rx_bytes: string;
+}
+
+export interface ReadNdefOutputResource {
+    ndef: NdefResource;
+}
+
+export interface AuthPasswordOutputResource {
+    ack: string;
+}
+
+export interface GetDumpOutputResource {
+    memory_dump: PageDumpResource[];
+}
+
+export interface PageDumpResource {
+    page: string;
+    data: string;
+    info: string;
+}
+
+export type CommandOutputResourceMap = {
+    [CommandString.Unknown]: {};
+    [CommandString.GetTags]: GetTagsOutputResource;
+    [CommandString.ReadNdef]: ReadNdefOutputResource;
+    [CommandString.FormatDefault]: {};
+    [CommandString.LockPermanent]: {};
+    [CommandString.GetDump]: GetDumpOutputResource;
+    [CommandString.TransmitAdapter]: TransmitAdapterOutputResource;
+    [CommandString.TransmitTag]: TransmitTagOutputResource;
+    [CommandString.WriteNdef]: {};
+    [CommandString.SetPassword]: {};
+    [CommandString.AuthPassword]: AuthPasswordOutputResource;
+    [CommandString.SetLocale]: {};
+    [CommandString.RemovePassword]: {};
+};
