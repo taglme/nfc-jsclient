@@ -1,24 +1,5 @@
 import { CommandString } from './commands';
 
-export interface RecordChunk {
-    MB: boolean; // Message begin
-    ME: boolean; // Message end
-    CF: boolean; // Chunk Flag
-    SR: boolean; // Short record
-    IL: boolean; // ID length field present
-    TNF: number; // Type name format (3 bits)
-    TypeLength: number; // Type Length
-    IDLength: number; // Length of the ID field
-    PayloadLength: number; // Length of the Payload.
-    Type: string; // Type of the payload. Must follow TNF
-    ID: string; // An URI (per RFC 3986)
-    Payload: ArrayBuffer; // Payload
-}
-
-export interface Record {
-    chunks: RecordChunk[];
-}
-
 export type NdefRecordPayloadResource = {
     tnf?: number;
     type?: string;
