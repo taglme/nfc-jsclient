@@ -22,7 +22,7 @@ export default class Client {
 
     constructor(url: string, locale: string, api: IApi) {
         const httpUrl = 'http://' + url;
-        const wsUrl = 'ws://' + httpUrl;
+        const wsUrl = 'ws://' + url;
 
         this.locale = locale;
         this.api = api;
