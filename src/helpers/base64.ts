@@ -24,5 +24,5 @@ export const base64ToHex = (str: string): string => {
         hex[hex.length] = tmp;
     }
 
-    return `0x${hex.join(' 0x')}`;
+    return hex.join(' ');
 };

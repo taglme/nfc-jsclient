@@ -1,11 +1,9 @@
 import Api from '../../src/api';
 import mockAxios from 'jest-mock-axios';
-import { Event } from '../../src/client/events';
-import { EventName, EventResource } from '../../src/models/events';
 import RunService, { JobRun, StepResult } from '../../src/client/runs';
 import { JobRunListResource, JobRunResource, JobRunStatus, StepResultResource } from '../../src/models/run';
 import { TagType } from '../../src/models/tags';
-import { Command, CommandStatus } from '../../src/models/commands';
+import { Command, CommandStatus, CommandString } from '../../src/models/commands';
 import { Tag } from '../../src/client/tags';
 
 afterEach(() => {
@@ -69,9 +67,17 @@ describe('RunService', () => {
                         tag: tagR,
                         results: [
                             {
-                                command: Command.toString(Command.GetDump),
+                                command: CommandString.GetDump,
                                 params: {},
-                                output: {},
+                                output: {
+                                    memory_dump: [
+                                        {
+                                            page: 'string',
+                                            data: 'string',
+                                            info: 'string',
+                                        },
+                                    ],
+                                },
                                 status: CommandStatus.toString(CommandStatus.Success),
                                 message: 'string',
                             },
@@ -101,9 +107,17 @@ describe('RunService', () => {
                     tag: new Tag(tagR),
                     results: [
                         new StepResult({
-                            command: Command.toString(Command.GetDump),
+                            command: CommandString.GetDump,
                             params: {},
-                            output: {},
+                            output: {
+                                memory_dump: [
+                                    {
+                                        page: 'string',
+                                        data: 'string',
+                                        info: 'string',
+                                    },
+                                ],
+                            },
                             status: CommandStatus.toString(CommandStatus.Success),
                             message: 'string',
                         }),
@@ -146,7 +160,7 @@ describe('RunService', () => {
                 tag: tagR,
                 results: [
                     {
-                        command: Command.toString(Command.GetDump),
+                        command: CommandString.FormatDefault,
                         params: {},
                         output: {},
                         status: CommandStatus.toString(CommandStatus.Success),
@@ -168,7 +182,7 @@ describe('RunService', () => {
             tag: new Tag(tagR),
             results: [
                 new StepResult({
-                    command: Command.toString(Command.GetDump),
+                    command: CommandString.FormatDefault,
                     params: {},
                     output: {},
                     status: CommandStatus.toString(CommandStatus.Success),
@@ -196,7 +210,7 @@ describe('JobRun', () => {
             tag: tagR,
             results: [
                 {
-                    command: Command.toString(Command.GetDump),
+                    command: Command.toString(Command.FormatDefault),
                     params: {},
                     output: {},
                     status: CommandStatus.toString(CommandStatus.Success),
@@ -218,7 +232,7 @@ describe('JobRun', () => {
             tag: new Tag(tagR),
             results: [
                 new StepResult({
-                    command: Command.toString(Command.GetDump),
+                    command: CommandString.FormatDefault,
                     params: {},
                     output: {},
                     status: CommandStatus.toString(CommandStatus.Success),
@@ -233,17 +247,17 @@ describe('JobRun', () => {
 describe('StepResult', () => {
     it('Instance created', () => {
         const sR = {
-            command: Command.toString(Command.GetDump),
+            command: CommandString.FormatDefault,
             params: {},
             output: {},
             status: CommandStatus.toString(CommandStatus.Success),
             message: 'string',
         };
 
-        const s = new StepResult(sR);
+        const s = new StepResult(sR as StepResultResource);
         expect(s).toBeInstanceOf(StepResult);
         expect(s).toEqual({
-            command: Command.GetDump,
+            command: Command.FormatDefault,
             params: {},
             output: {},
             status: CommandStatus.Success,

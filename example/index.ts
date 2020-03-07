@@ -5,6 +5,14 @@ import { CommandString } from '../dist/models/commands';
 import { Adapter } from '../src/client/adapters';
 import { NdefRecordPayloadTypeString } from '../src/models/ndefconv';
 import { JobRun } from '../src/client/runs';
+import { base64ToHex, hexToBase64 } from '../src/helpers/base64';
+
+console.log('====>TEST base64ToHex:');
+console.log('BCJs2qdkgQ==', 'converts to', base64ToHex('BCJs2qdkgQ=='));
+
+console.log('====>TEST hexToBase64:');
+console.log('04 22 6c da a7 64 81', 'converts to', hexToBase64('04 22 6c da a7 64 81'));
+console.log('04226cdaa76481', 'converts to', hexToBase64('04226cdaa76481'));
 
 let adapterId = undefined;
 

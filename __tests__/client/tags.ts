@@ -2,7 +2,7 @@ import Api from '../../src/api';
 import mockAxios from 'jest-mock-axios';
 import { Tag, TagService } from '../../src/client/tags';
 import { TagResource, TagType } from '../../src/models/tags';
-import { str2ab } from '../../src/helpers/byte';
+import { base64ToHex } from '../../src/helpers/base64';
 
 afterEach(() => {
     mockAxios.reset();
@@ -55,11 +55,11 @@ describe('TagService', () => {
             {
                 adapterID: 'test',
                 adapterName: 'test',
-                atr: str2ab('za7VbYcSQU2zRgGQXQAm/g=='),
+                atr: base64ToHex('za7VbYcSQU2zRgGQXQAm/g=='),
                 product: 'test',
                 tagID: 'test',
                 type: TagType.Bluetooth,
-                uid: str2ab('za7VbYcSQU2zRgGQXQAm/g=='),
+                uid: base64ToHex('za7VbYcSQU2zRgGQXQAm/g=='),
                 vendor: 'test',
             },
         ]);
@@ -106,11 +106,11 @@ describe('TagService', () => {
         expect(thenFn).toHaveBeenCalledWith({
             adapterID: 'test',
             adapterName: 'test',
-            atr: str2ab('za7VbYcSQU2zRgGQXQAm/g=='),
+            atr: base64ToHex('za7VbYcSQU2zRgGQXQAm/g=='),
             product: 'test',
             tagID: 'test',
             type: TagType.Bluetooth,
-            uid: str2ab('za7VbYcSQU2zRgGQXQAm/g=='),
+            uid: base64ToHex('za7VbYcSQU2zRgGQXQAm/g=='),
             vendor: 'test',
         });
 
@@ -138,11 +138,11 @@ describe('Tag', () => {
         expect(e).toEqual({
             adapterID: 'test',
             adapterName: 'test',
-            atr: str2ab('za7VbYcSQU2zRgGQXQAm/g=='),
+            atr: base64ToHex('za7VbYcSQU2zRgGQXQAm/g=='),
             product: 'test',
             tagID: 'test',
             type: TagType.Bluetooth,
-            uid: str2ab('za7VbYcSQU2zRgGQXQAm/g=='),
+            uid: base64ToHex('za7VbYcSQU2zRgGQXQAm/g=='),
             vendor: 'test',
         });
     });

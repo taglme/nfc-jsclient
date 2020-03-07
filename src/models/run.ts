@@ -38,6 +38,11 @@ export type StepResultResource = {
     message: string;
 } & (
     | {
+          command: CommandString.Unknown;
+          output: CommandOutputResourceMap[CommandString.Unknown];
+          params: JobStepResourceParamsMap[CommandString.Unknown];
+      }
+    | {
           command: CommandString.GetTags;
           output: CommandOutputResourceMap[CommandString.GetTags];
           params: JobStepResourceParamsMap[CommandString.GetTags];

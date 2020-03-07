@@ -1,14 +1,14 @@
 import { TagResource, TagShortResource, TagType } from '../models/tags';
 import { IApi } from '../interfaces';
-import { str2ab } from '../helpers/byte';
+import { base64ToHex } from '../helpers/base64';
 
 export class Tag {
     tagID: string;
     type: TagType;
     adapterID: string;
     adapterName: string;
-    uid: Uint8Array;
-    atr: Uint8Array;
+    uid: string;
+    atr: string;
     product: string;
     vendor: string;
 
@@ -17,8 +17,8 @@ export class Tag {
         this.type = TagType.parse(r.type);
         this.adapterID = r.adapter_id;
         this.adapterName = r.adapter_name;
-        this.uid = str2ab(r.uid);
-        this.atr = str2ab(r.atr);
+        this.uid = base64ToHex(r.uid);
+        this.atr = base64ToHex(r.atr);
         this.product = r.product;
         this.vendor = r.vendor;
     }
