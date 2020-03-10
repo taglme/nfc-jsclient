@@ -196,6 +196,7 @@ client.Ws.onEvent((e): void => {
         case EventName.TagRelease:
         case EventName.JobSubmitted:
             console.log(EventName.toString(e.name), e.data);
+            break;
         case EventName.RunStarted:
         case EventName.RunSuccess:
         case EventName.RunError:
