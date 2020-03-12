@@ -88,7 +88,7 @@ client.WsService.onEvent(eHandler)
 - `postinstall` – Run `yarn build && yarn lint --fix && yarn test`
 
 - `yarn build-example` – Run `webpack` to build example html + index.ts
-- `yarn seerve-example` – Run simple static `http-server` from `dist/example` folder
+- `yarn serve-example` – Run simple static `http-server` from `dist/example` folder
 - `example` – Run `yarn && yarn build-example && yarn serve-example`
 
 ### License
