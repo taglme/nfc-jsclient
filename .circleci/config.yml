@@ -10,6 +10,7 @@ jobs:
       - node/with-cache:
           steps:
             - run: yarn
+            - run: codecov
 workflows:
     build-and-test:
       jobs:
