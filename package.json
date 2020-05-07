@@ -11,7 +11,6 @@
         "build-example": "webpack --config example/webpack.config.js",
         "lint": "eslint ./src --ext ts",
         "test": "jest --passWithNoTests",
-        "postinstall": "yarn build && yarn lint --fix && yarn test",
         "serve-example": "npx http-server ./dist/example",
         "example": "yarn && yarn build && yarn build-example && yarn serve-example "
     },
