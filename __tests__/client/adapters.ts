@@ -1,7 +1,7 @@
 import Api from '../../src/api';
 import mockAxios from 'jest-mock-axios';
 import AdapterService, { Adapter } from '../../src/client/adapters';
-import { AdapterResource, AdapterType } from '../../src/models/adapters';
+import { AdapterResource, AdapterStatus, AdapterType } from '../../src/models/adapters';
 
 afterEach(() => {
     mockAxios.reset();
@@ -40,6 +40,7 @@ describe('AdapterService', () => {
                     name: 'test',
                     type: AdapterType.toString(AdapterType.Barcode),
                     driver: 'test',
+                    status: AdapterStatus.toString(AdapterStatus.Active),
                     kind: 'test',
                 },
             ] as AdapterResource[],
@@ -52,6 +53,7 @@ describe('AdapterService', () => {
                 href: 'test',
                 name: 'test',
                 type: AdapterType.Barcode,
+                status: AdapterStatus.Active,
                 driver: 'test',
                 kind: 'test',
             },
@@ -83,6 +85,7 @@ describe('AdapterService', () => {
                 href: 'test',
                 name: 'test',
                 type: AdapterType.toString(AdapterType.Barcode),
+                status: AdapterStatus.toString(AdapterStatus.Active),
                 driver: 'test',
                 kind: 'test',
             } as AdapterResource,
@@ -94,6 +97,7 @@ describe('AdapterService', () => {
             href: 'test',
             name: 'test',
             type: AdapterType.Barcode,
+            status: AdapterStatus.Active,
             driver: 'test',
             kind: 'test',
         });
@@ -109,9 +113,9 @@ describe('Adapter', () => {
             href: 'test',
             name: 'test',
             type: AdapterType.toString(AdapterType.Barcode),
+            status: AdapterStatus.toString(AdapterStatus.Active),
             driver: 'test',
             kind: 'test',
-            status: 'active',
         };
 
         const e = new Adapter(aR);
@@ -121,6 +125,7 @@ describe('Adapter', () => {
             href: 'test',
             name: 'test',
             type: AdapterType.Barcode,
+            status: AdapterStatus.Active,
             driver: 'test',
             kind: 'test',
         });

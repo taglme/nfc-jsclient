@@ -1,10 +1,11 @@
-import { AdapterResource, AdapterShortResource, AdapterType } from '../models/adapters';
+import { AdapterResource, AdapterShortResource, AdapterStatus, AdapterType } from '../models/adapters';
 import { IApi } from '../interfaces';
 
 export class Adapter {
     href: string;
     name: string;
     type: AdapterType;
+    status: AdapterStatus;
     driver?: string;
     kind: string;
     adapterId: string;
@@ -15,6 +16,7 @@ export class Adapter {
         this.type = AdapterType.parse(a.type);
         this.kind = a.kind;
         this.adapterId = a.adapter_id;
+        this.status = AdapterStatus.parse(a.status);
 
         if ('driver' in a) {
             this.driver = a.driver;
