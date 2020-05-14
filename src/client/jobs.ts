@@ -151,6 +151,34 @@ export default class JobService {
             });
     };
 
+    // Activate job in adapter
+    // adapterId – Unique identifier in form of UUID representing a specific adapter.
+    // jobId – Unique identifier in form of UUID representing a specific job.
+    activate = (adapterId: string, jobId: string): Promise<{}> => {
+        const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + jobId + '/activate';
+
+        return this.api
+            .call<JobResource>(({ post }) => post(url, {}))
+            .then<Job>(resp => new Job(resp))
+            .catch((err: Error) => {
+                throw new Error('Error on job activate: ' + JSON.stringify(err));
+            });
+    };
+
+    // Reset job statistics
+    // adapterId – Unique identifier in form of UUID representing a specific adapter.
+    // jobId – Unique identifier in form of UUID representing a specific job.
+    reset = (adapterId: string, jobId: string): Promise<{}> => {
+        const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + jobId + '/reset';
+
+        return this.api
+            .call<JobResource>(({ post }) => post(url, {}))
+            .then<Job>(resp => new Job(resp))
+            .catch((err: Error) => {
+                throw new Error('Error on job reset: ' + JSON.stringify(err));
+            });
+    };
+
     // Delete all jobs from adapter
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
     deleteAll = (adapterId: string): Promise<{}> => {

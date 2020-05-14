@@ -60,4 +60,30 @@ export default class AdapterService {
                 throw new Error('Error on adapter get: ' + JSON.stringify(err));
             });
     };
+
+    // Activate adapter
+    // adapterID – Unique identifier in form of UUID representing a specific adapter.
+    activate = (adapterID: string): Promise<Adapter> => {
+        const url = this.url + this.path + '/' + adapterID + '/activate';
+
+        return this.api
+            .call<AdapterResource>(({ post }) => post(url, {}))
+            .then<Adapter>(resp => new Adapter(resp))
+            .catch((err: Error) => {
+                throw new Error('Error on adapter activate: ' + JSON.stringify(err));
+            });
+    };
+
+    // Activate adapter
+    // adapterID – Unique identifier in form of UUID representing a specific adapter.
+    pause = (adapterID: string): Promise<Adapter> => {
+        const url = this.url + this.path + '/' + adapterID + '/pause';
+
+        return this.api
+            .call<AdapterResource>(({ post }) => post(url, {}))
+            .then<Adapter>(resp => new Adapter(resp))
+            .catch((err: Error) => {
+                throw new Error('Error on adapter activate: ' + JSON.stringify(err));
+            });
+    };
 }

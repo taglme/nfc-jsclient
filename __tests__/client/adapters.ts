@@ -111,6 +111,7 @@ describe('Adapter', () => {
             type: AdapterType.toString(AdapterType.Barcode),
             driver: 'test',
             kind: 'test',
+            status: 'active',
         };
 
         const e = new Adapter(aR);

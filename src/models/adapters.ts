@@ -29,6 +29,37 @@ export namespace AdapterType {
     }
 }
 
+export enum AdapterStatus {
+    Unknown,
+    Inactive,
+    Active,
+    Paused,
+}
+
+export namespace AdapterStatus {
+    export function toString(t: AdapterStatus): string {
+        const names = ['', 'inactive', 'active', 'paused'];
+
+        if (t < AdapterStatus.Inactive || t > AdapterStatus.Paused) {
+            return names[0];
+        }
+        return names[t];
+    }
+
+    export function parse(s: string): AdapterStatus {
+        switch (s) {
+            case AdapterStatus.toString(AdapterStatus.Inactive):
+                return AdapterStatus.Inactive;
+            case AdapterStatus.toString(AdapterStatus.Active):
+                return AdapterStatus.Active;
+            case AdapterStatus.toString(AdapterStatus.Paused):
+                return AdapterStatus.Paused;
+        }
+
+        return AdapterStatus.Unknown;
+    }
+}
+
 export interface AdapterResource {
     adapter_id: string;
     href: string;
@@ -36,6 +67,7 @@ export interface AdapterResource {
     type: string;
     driver: string;
     kind: string;
+    status: string;
 }
 
 export interface AdapterShortResource {
@@ -44,4 +76,5 @@ export interface AdapterShortResource {
     href: string;
     name: string;
     type: string;
+    status: string;
 }
