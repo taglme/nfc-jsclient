@@ -123,5 +123,6 @@ export interface JobFilter {
     sortBy?: string;
     sortDir?: string;
     offset?: number;
+    keyword?: string;
     limit?: number;
 }

@@ -127,6 +127,7 @@ export interface RunFilter {
     status?: JobRunStatus;
     sortBy?: string;
     sortDir?: string;
+    keyword?: string;
     offset?: number;
     limit?: number;
 }

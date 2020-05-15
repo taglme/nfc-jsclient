@@ -23,5 +23,9 @@ export const buildJobsQueryParams = (filter: JobFilter): string => {
         queryParams += '&limit=' + filter.limit;
     }
 
+    if (filter.keyword) {
+        queryParams += '&keyword=' + filter.keyword;
+    }
+
     return queryParams.replace('&', '?');
 };

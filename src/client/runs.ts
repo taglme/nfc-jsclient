@@ -16,6 +16,7 @@ import {
 import { IApi } from '../interfaces';
 import { base64ToHex } from '../helpers/base64';
 import { ParamsLocale, ParamsNdefMessages, ParamsPassword, ParamsTxBytes } from '../models/jobs';
+import { buildMultipleActionQueryParams } from '../helpers/common';
 
 export class StepResult {
     command: Command;
@@ -138,6 +139,34 @@ export default class RunService {
             .then<JobRun>(resp => new JobRun(resp))
             .catch((err: Error) => {
                 throw new Error('Error on job run get: ' + JSON.stringify(err));
+            });
+    };
+
+    // Delete all jobs from adapter
+    // adapterId – Unique identifier in form of UUID representing a specific adapter.
+    // keyword - Filter keyword.
+    // ids - Stringified array of ID's to reset (can be empty)
+    deleteAll = (adapterId: string, keyword?: string, ids?: string): Promise<{}> => {
+        const url =
+            `${this.url}${this.basePath}/${adapterId}${this.path}` + buildMultipleActionQueryParams(keyword, ids);
+
+        return this.api
+            .call<{}>(({ del }) => del(url, {}))
+            .catch((err: Error) => {
+                throw new Error('Error on runs delete all: ' + JSON.stringify(err));
+            });
+    };
+
+    // Delete job from adapter
+    // adapterId – Unique identifier in form of UUID representing a specific adapter.
+    // runId – Unique identifier in form of UUID representing a specific job run.
+    delete = (adapterId: string, runId: string): Promise<{}> => {
+        const url = this.url + this.basePath + '/' + adapterId + this.path + '/' + runId;
+
+        return this.api
+            .call<{}>(({ del }) => del(url, {}))
+            .catch((err: Error) => {
+                throw new Error('Error on run delete: ' + JSON.stringify(err));
             });
     };
 }

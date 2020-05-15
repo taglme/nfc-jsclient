@@ -15,6 +15,7 @@ import { buildJobsQueryParams } from '../helpers/jobs';
 import { Command, CommandString } from '../models/commands';
 import { IApi } from '../interfaces';
 import { hexToBase64, base64ToHex } from '../helpers/base64';
+import { buildMultipleActionQueryParams } from '../helpers/common';
 
 export class JobStep {
     command: Command;
@@ -165,6 +166,21 @@ export default class JobService {
             });
     };
 
+    // Reset all jobs statistics
+    // adapterId – Unique identifier in form of UUID representing a specific adapter.
+    // keyword - Filter keyword.
+    // ids - Stringified array of ID's to reset (can be empty)
+    resetAll = (adapterId: string, keyword?: string, ids?: string): Promise<{}> => {
+        const url =
+            `${this.url}${this.basePath}/${adapterId}${this.path}/reset` + buildMultipleActionQueryParams(keyword, ids);
+
+        return this.api
+            .call<{}>(({ post }) => post(url, {}))
+            .catch((err: Error) => {
+                throw new Error('Error on jobs delete all: ' + JSON.stringify(err));
+            });
+    };
+
     // Reset job statistics
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
     // jobId – Unique identifier in form of UUID representing a specific job.
@@ -181,8 +197,11 @@ export default class JobService {
 
     // Delete all jobs from adapter
     // adapterId – Unique identifier in form of UUID representing a specific adapter.
-    deleteAll = (adapterId: string): Promise<{}> => {
-        const url = this.url + this.basePath + '/' + adapterId + this.path;
+    // keyword - Filter keyword.
+    // ids - Stringified array of ID's to reset (can be empty)
+    deleteAll = (adapterId: string, keyword?: string, ids?: string): Promise<{}> => {
+        const url =
+            `${this.url}${this.basePath}/${adapterId}${this.path}` + buildMultipleActionQueryParams(keyword, ids);
 
         return this.api
             .call<{}>(({ del }) => del(url, {}))
