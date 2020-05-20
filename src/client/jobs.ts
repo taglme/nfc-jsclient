@@ -175,7 +175,7 @@ export default class JobService {
             `${this.url}${this.basePath}/${adapterId}${this.path}/reset` + buildMultipleActionQueryParams(keyword, ids);
 
         return this.api
-            .call<{}>(({ post }) => post(url, {}))
+            .call<{}>(({ patch }) => patch(url, {}))
             .catch((err: Error) => {
                 throw new Error('Error on jobs delete all: ' + JSON.stringify(err));
             });
