@@ -12,6 +12,8 @@ export type FunctionApiCallback = <T extends {}>(h: TRequestHandlers) => AxiosPr
 
 export interface IApi {
     updateApi: (config: AxiosRequestConfig) => void;
+    setLocale: (lang: string) => void;
+    setAuth: (token: string) => void;
     call: <T extends {}>(cb: FunctionApiCallback) => Promise<T>;
     readonly requestHandlers: TRequestHandlers;
 }

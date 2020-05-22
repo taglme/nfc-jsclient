@@ -46,6 +46,14 @@ export default class Api implements IApi {
         this.axiosInstance = axios.create(config);
     };
 
+    public setLocale = (lang: string): void => {
+        this.axiosInstance.defaults.headers['Accept-Language'] = lang;
+    };
+
+    public setAuth = (token: string): void => {
+        this.axiosInstance.defaults.headers.Authorization = token;
+    };
+
     public call = <T extends {}>(cb: FunctionApiCallback): Promise<T> =>
         cb<T>(this.requestHandlers)
             .then(r => r.data)

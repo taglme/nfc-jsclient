@@ -35,4 +35,13 @@ export default class Client {
         this.Jobs = new JobService(api, httpUrl);
         this.Ws = new WsService(wsUrl);
     }
+
+    setLocale(lang: string): void {
+        this.locale = lang;
+        this.api.setLocale(lang);
+    }
+
+    setAuth(token: string): void {
+        this.api.setAuth(token);
+    }
 }
