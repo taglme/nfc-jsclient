@@ -18,7 +18,7 @@
         "@types/node": "^13.7.7",
         "axios": "^0.19.2",
         "buffer": "^5.4.3",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "typescript": "^3.8.3"
     },
     "devDependencies": {
