@@ -1,6 +1,6 @@
 {
     "name": "nfc-jsclient",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "repository": "https://github.com/taglme/nfc-jsclient.git",
@@ -11,6 +11,7 @@
         "build-test": "tsc -p tsconfig.test.json",
         "build-example": "webpack --config example/webpack.config.js",
         "lint": "eslint ./src --ext ts",
+        "prepare": "npm run build",
         "test": "npm run build-test && jest --passWithNoTests",
         "serve-example": "npx http-server ./dist/example",
         "example": "yarn && yarn build && yarn build-example && yarn serve-example "
