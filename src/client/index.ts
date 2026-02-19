@@ -7,6 +7,7 @@ import RunService from './runs';
 import { TagService } from './tags';
 import { SnippetService } from './snippets';
 import WsService from './ws';
+import LicenseService from './license';
 
 export default class Client {
     private locale: string;
@@ -18,11 +19,14 @@ export default class Client {
     Tags: TagService;
     Runs: RunService;
     Jobs: JobService;
+    Licenses: LicenseService;
     Ws: WsService;
 
     constructor(url: string, locale: string, api: IApi) {
-        const httpUrl = 'http://' + url;
-        const wsUrl = 'ws://' + url;
+        const httpUrl = url.startsWith('http://') || url.startsWith('https://') ? url : 'http://' + url;
+        const wsUrl = url.startsWith('https://')
+            ? httpUrl.replace(/^https:\/\//, 'wss://')
+            : httpUrl.replace(/^http:\/\//, 'ws://');
 
         this.locale = locale;
         this.api = api;
@@ -33,6 +37,7 @@ export default class Client {
         this.Tags = new TagService(api, httpUrl);
         this.Runs = new RunService(api, httpUrl);
         this.Jobs = new JobService(api, httpUrl);
+        this.Licenses = new LicenseService(api, httpUrl);
         this.Ws = new WsService(wsUrl);
     }
 
@@ -41,7 +46,11 @@ export default class Client {
         this.api.setLocale(lang);
     }
 
-    setAuth(token: string): void {
-        this.api.setAuth(token);
+    setAppKey(token: string): void {
+        this.api.setAppKey(token);
+    }
+
+    setUserToken(token: string): void {
+        this.api.setUserToken(token);
     }
 }

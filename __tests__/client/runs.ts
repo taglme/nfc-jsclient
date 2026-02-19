@@ -1,13 +1,18 @@
 import Api from '../../src/api';
-import mockAxios from 'jest-mock-axios';
+import axios from 'axios';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import RunService, { JobRun, StepResult } from '../../src/client/runs';
 import { JobRunListResource, JobRunResource, JobRunStatus, StepResultResource } from '../../src/models/run';
 import { TagType } from '../../src/models/tags';
 import { Command, CommandStatus, CommandString } from '../../src/models/commands';
 import { Tag } from '../../src/client/tags';
 
+let mock: InstanceType<typeof AxiosMockAdapter>;
+
 afterEach(() => {
-    mockAxios.reset();
+    if (mock) {
+        mock.restore();
+    }
 });
 
 const tagR = {
@@ -24,72 +29,58 @@ const tagR = {
 };
 
 describe('RunService', () => {
-    const api = new Api();
+    const api = new Api({}, axios.create());
 
     it('Instance created', () => {
         const a = new RunService(api, 'url');
         expect(a).toBeInstanceOf(RunService);
     });
 
-    it('getFiltered', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('getFiltered', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new RunService(api, 'url');
-        a.getFiltered('aId', { status: JobRunStatus.Started })
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url/adapters/aId/runs?status=started',
-        });
-
-        const responseObj = {
-            data: {
-                total: 1,
-                length: 1,
-                limit: 1,
-                offset: 1,
-                items: [
-                    {
-                        run_id: 'string',
-                        kind: 'string',
-                        href: 'string',
-                        job_id: 'string',
-                        job_name: 'string',
-                        status: JobRunStatus.toString(JobRunStatus.Success),
-                        adapter_id: 'string',
-                        adapter_name: 'string',
-                        tag: tagR,
-                        results: [
-                            {
-                                command: CommandString.GetDump,
-                                params: {},
-                                output: {
-                                    memory_dump: [
-                                        {
-                                            page: 'string',
-                                            data: 'string',
-                                            info: 'string',
-                                        },
-                                    ],
-                                },
-                                status: CommandStatus.toString(CommandStatus.Success),
-                                message: 'string',
+        mock.onGet('url/adapters/aId/runs?status=started').reply(200, {
+            total: 1,
+            length: 1,
+            limit: 1,
+            offset: 1,
+            items: [
+                {
+                    run_id: 'string',
+                    kind: 'string',
+                    href: 'string',
+                    job_id: 'string',
+                    job_name: 'string',
+                    status: JobRunStatus.toString(JobRunStatus.Success),
+                    adapter_id: 'string',
+                    adapter_name: 'string',
+                    tag: tagR,
+                    results: [
+                        {
+                            command: CommandString.GetDump,
+                            params: {},
+                            output: {
+                                memory_dump: [
+                                    {
+                                        page: 'string',
+                                        data: 'string',
+                                        info: 'string',
+                                    },
+                                ],
                             },
-                        ] as StepResultResource[],
-                        created_at: '2020-03-03T10:12:03.881Z',
-                    },
-                ],
-            } as JobRunListResource,
-        };
-        mockAxios.mockResponse(responseObj);
+                            status: CommandStatus.toString(CommandStatus.Success),
+                            message: 'string',
+                        },
+                    ] as StepResultResource[],
+                    created_at: '2020-03-03T10:12:03.881Z',
+                },
+            ],
+        } as JobRunListResource);
 
-        expect(thenFn).toHaveBeenCalledWith({
+        await expect(a.getFiltered('aId', { status: JobRunStatus.Started })).resolves.toEqual({
             pagInfo: {
                 total: 1,
                 length: 1,
@@ -126,53 +117,37 @@ describe('RunService', () => {
                 },
             ],
         });
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 
-    it('get', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('get', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new RunService(api, 'url');
-        a.get('aId', 'runId')
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url/adapters/aId/runs?status=started',
-        });
+        mock.onGet('url/adapters/aId/runs/runId').reply(200, {
+            run_id: 'string',
+            kind: 'string',
+            href: 'string',
+            job_id: 'string',
+            job_name: 'string',
+            status: JobRunStatus.toString(JobRunStatus.Success),
+            adapter_id: 'string',
+            adapter_name: 'string',
+            tag: tagR,
+            results: [
+                {
+                    command: CommandString.FormatDefault,
+                    params: {},
+                    output: {},
+                    status: CommandStatus.toString(CommandStatus.Success),
+                    message: 'string',
+                },
+            ] as StepResultResource[],
+            created_at: '2020-03-03T10:12:03.881Z',
+        } as JobRunResource);
 
-        const responseObj = {
-            data: {
-                run_id: 'string',
-                kind: 'string',
-                href: 'string',
-                job_id: 'string',
-                job_name: 'string',
-                status: JobRunStatus.toString(JobRunStatus.Success),
-                adapter_id: 'string',
-                adapter_name: 'string',
-                tag: tagR,
-                results: [
-                    {
-                        command: CommandString.FormatDefault,
-                        params: {},
-                        output: {},
-                        status: CommandStatus.toString(CommandStatus.Success),
-                        message: 'string',
-                    },
-                ] as StepResultResource[],
-                created_at: '2020-03-03T10:12:03.881Z',
-            } as JobRunResource,
-        };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith({
+        await expect(a.get('aId', 'runId')).resolves.toEqual({
             runID: 'string',
             jobID: 'string',
             jobName: 'string',
@@ -191,8 +166,6 @@ describe('RunService', () => {
             ],
             createdAt: new Date('2020-03-03T10:12:03.881Z'),
         });
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 });
 

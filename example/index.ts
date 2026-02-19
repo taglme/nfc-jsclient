@@ -21,7 +21,12 @@ const getAdapterId = (adapters: Adapter[]): string | undefined => {
 };
 
 let testIterator = 0;
-const client = new NfcClient('127.0.0.1:3011', 'en');
+// X-App-Key is required for API requests.
+// Replace with a real signed JWT (EdDSA) for your environment.
+const xAppKey = '<paste-x-app-key>';
+// X-User-Token is optional.
+const xUserToken = '';
+const client = new NfcClient('127.0.0.1:3011', 'en', xAppKey, xUserToken);
 
 const ArrayOfTestes = (id: string) => [
     () =>

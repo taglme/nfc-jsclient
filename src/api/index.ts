@@ -1,37 +1,52 @@
-import axios, { AxiosInstance, AxiosRequestConfig, Method, AxiosPromise } from 'axios';
-import { pick } from 'lodash';
-import { IApi, FunctionApiCallback, TRequestHandlers } from '../interfaces';
+import axios, { AxiosInstance, AxiosRequestConfig, Method } from 'axios';
+import { ApiResponse, IApi, FunctionApiCallback, TRequestHandlers } from '../interfaces';
 
-const axiosInstance = axios.create();
+function pick<T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
+    const out = {} as Pick<T, K>;
+    for (const k of keys) {
+        if (obj && Object.prototype.hasOwnProperty.call(obj, k)) {
+            out[k] = obj[k];
+        }
+    }
+    return out;
+}
 
 export default class Api implements IApi {
     private axiosInstance: AxiosInstance;
-    constructor(config?: AxiosRequestConfig) {
-        this.axiosInstance = axios.create(config);
+    constructor(config?: AxiosRequestConfig, instance?: AxiosInstance) {
+        this.axiosInstance = instance || axios.create(config);
+        if (config && instance) {
+            // Merge provided config into the injected instance defaults (useful for tests).
+            this.axiosInstance.defaults = { ...this.axiosInstance.defaults, ...config } as any;
+        }
     }
 
     private makeRequest = <T extends {}>(
         method: Method,
         url: string,
         options: AxiosRequestConfig = {},
-    ): AxiosPromise<T> => {
+    ): Promise<ApiResponse<T>> => {
         const { data, params } = options;
-        const headers = { ...axiosInstance.defaults.headers, ...options.headers };
+        const headers = {
+            ...(this.axiosInstance.defaults.headers as any),
+            ...(options.headers as any),
+        } as any;
 
-        return this.axiosInstance({ method, url, data, params, headers }).then(response =>
-            pick(response, ['data', 'status']),
-        );
+        return (this.axiosInstance as any)({ method, url, data, params, headers } as any).then((response: any) => {
+            const picked = pick(response as any, ['data', 'status']);
+            return picked as ApiResponse<T>;
+        });
     };
 
-    private get = <T extends {}>(url: string, config: AxiosRequestConfig): AxiosPromise<T> =>
+    private get = <T extends {}>(url: string, config: AxiosRequestConfig): Promise<ApiResponse<T>> =>
         this.makeRequest('get', url, config);
-    private post = <T extends {}>(url: string, config: AxiosRequestConfig): AxiosPromise<T> =>
+    private post = <T extends {}>(url: string, config: AxiosRequestConfig): Promise<ApiResponse<T>> =>
         this.makeRequest('post', url, config);
-    private put = <T extends {}>(url: string, config: AxiosRequestConfig): AxiosPromise<T> =>
+    private put = <T extends {}>(url: string, config: AxiosRequestConfig): Promise<ApiResponse<T>> =>
         this.makeRequest('put', url, config);
-    private patch = <T extends {}>(url: string, config: AxiosRequestConfig): AxiosPromise<T> =>
+    private patch = <T extends {}>(url: string, config: AxiosRequestConfig): Promise<ApiResponse<T>> =>
         this.makeRequest('patch', url, config);
-    private del = <T extends {}>(url: string, config: AxiosRequestConfig): AxiosPromise<T> =>
+    private del = <T extends {}>(url: string, config: AxiosRequestConfig): Promise<ApiResponse<T>> =>
         this.makeRequest('delete', url, config);
 
     public readonly requestHandlers: TRequestHandlers = {
@@ -50,8 +65,12 @@ export default class Api implements IApi {
         this.axiosInstance.defaults.headers['Accept-Language'] = lang;
     };
 
-    public setAuth = (token: string): void => {
-        this.axiosInstance.defaults.headers.Authorization = token;
+    public setAppKey = (token: string): void => {
+        this.axiosInstance.defaults.headers['X-App-Key'] = token;
+    };
+
+    public setUserToken = (token: string): void => {
+        this.axiosInstance.defaults.headers['X-User-Token'] = token;
     };
 
     public call = <T extends {}>(cb: FunctionApiCallback): Promise<T> =>

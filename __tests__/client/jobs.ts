@@ -1,11 +1,16 @@
 import Api from '../../src/api';
-import mockAxios from 'jest-mock-axios';
+import axios from 'axios';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import { Command, CommandString } from '../../src/models/commands';
 import JobService, { Job, JobStep } from '../../src/client/jobs';
 import { JobListResource, JobResource, JobStatus, JobStepResource } from '../../src/models/jobs';
 
+let mock: InstanceType<typeof AxiosMockAdapter>;
+
 afterEach(() => {
-    mockAxios.reset();
+    if (mock) {
+        mock.restore();
+    }
 });
 
 const sR: JobStepResource = {
@@ -31,42 +36,28 @@ const jR: JobResource = {
 };
 
 describe('JobService', () => {
-    const api = new Api();
+    const api = new Api({}, axios.create());
 
     it('Instance created', () => {
         const a = new JobService(api, 'url');
         expect(a).toBeInstanceOf(JobService);
     });
 
-    it('getFiltered', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('getFiltered', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new JobService(api, 'url');
-        a.getFiltered('aId', { status: JobStatus.Active })
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url/adapters/aId/jobs?status=active',
-        });
+        mock.onGet('url/adapters/aId/jobs?status=active').reply(200, {
+            total: 1,
+            length: 1,
+            limit: 1,
+            offset: 1,
+            items: [jR],
+        } as JobListResource);
 
-        const responseObj = {
-            data: {
-                total: 1,
-                length: 1,
-                limit: 1,
-                offset: 1,
-                items: [jR],
-            } as JobListResource,
-        };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith({
+        await expect(a.getFiltered('aId', { status: JobStatus.Active })).resolves.toEqual({
             pagInfo: {
                 total: 1,
                 length: 1,
@@ -95,43 +86,32 @@ describe('JobService', () => {
                 },
             ],
         });
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 
-    it('add', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('add', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new JobService(api, 'url');
-        a.add('aId', {
-            job_name: 'name',
-            repeat: 1,
-            expire_after: 1,
-            steps: [sR],
-        })
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: {
+        mock.onPost('url/adapters/aId/jobs').reply(config => {
+            expect(JSON.parse(config.data)).toEqual({
                 job_name: 'name',
                 repeat: 1,
                 expire_after: 1,
                 steps: [sR],
-            },
-            headers: { common: [] },
-            method: 'post',
-            params: undefined,
-            url: 'url/adapters/aId/jobs',
+            });
+            return [200, jR];
         });
 
-        const responseObj = {
-            data: jR,
-        };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith({
+        await expect(
+            a.add('aId', {
+                job_name: 'name',
+                repeat: 1,
+                expire_after: 1,
+                steps: [sR],
+            }),
+        ).resolves.toEqual({
             jobID: 'string',
             jobName: 'string',
             status: JobStatus.Active,
@@ -150,80 +130,40 @@ describe('JobService', () => {
             ],
             createdAt: new Date('2020-03-03T10:12:03.881Z'),
         });
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 
-    it('deleteAll', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('deleteAll', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new JobService(api, 'url');
-        a.deleteAll('aId')
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'delete',
-            params: undefined,
-            url: 'url/adapters/aId/jobs',
-        });
-
-        mockAxios.mockResponse({ data: {} });
-
-        expect(thenFn).toHaveBeenCalledWith({});
-
-        expect(catchFn).not.toHaveBeenCalled();
+        mock.onDelete('url/adapters/aId/jobs').reply(200, {});
+        await expect(a.deleteAll('aId')).resolves.toEqual({});
     });
 
-    it('delete', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('delete', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new JobService(api, 'url');
-        a.delete('aId', 'jId')
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'delete',
-            params: undefined,
-            url: 'url/adapters/aId/jobs/jId',
-        });
-
-        mockAxios.mockResponse({ data: {} });
-
-        expect(thenFn).toHaveBeenCalledWith({});
-
-        expect(catchFn).not.toHaveBeenCalled();
+        mock.onDelete('url/adapters/aId/jobs/jId').reply(200, {});
+        await expect(a.delete('aId', 'jId')).resolves.toEqual({});
     });
 
-    it('update status', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('update status', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new JobService(api, 'url');
-        a.updateStatus('aId', 'jId', JobStatus.Active)
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: { status: JobStatus.toString(JobStatus.Active) },
-            headers: { common: [] },
-            method: 'patch',
-            params: undefined,
-            url: 'url/adapters/aId/jobs/jId',
+        mock.onPatch('url/adapters/aId/jobs/jId').reply(config => {
+            expect(JSON.parse(config.data)).toEqual({ status: JobStatus.toString(JobStatus.Active) });
+            return [200, jR];
         });
 
-        mockAxios.mockResponse({
-            data: jR,
-        });
-
-        expect(thenFn).toHaveBeenCalledWith({
+        await expect(a.updateStatus('aId', 'jId', JobStatus.Active)).resolves.toEqual({
             jobID: 'string',
             jobName: 'string',
             status: JobStatus.Active,
@@ -242,8 +182,6 @@ describe('JobService', () => {
             ],
             createdAt: new Date('2020-03-03T10:12:03.881Z'),
         });
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 });
 

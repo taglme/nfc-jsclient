@@ -3,6 +3,7 @@ import { IApi } from '../interfaces';
 
 export class AppInfo {
     name: string;
+    hostName: string;
     version: string;
     commit: string;
     sdkInfo: string;
@@ -17,6 +18,7 @@ export class AppInfo {
 
     constructor(a: AppInfoResource) {
         this.name = a.name;
+        this.hostName = a.host_name || '';
         this.version = a.version;
         this.commit = a.commit;
         this.sdkInfo = a.sdk_info;

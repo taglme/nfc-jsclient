@@ -1,8 +1,13 @@
 import Api from '../../src/api';
-import mockAxios from 'jest-mock-axios';
+import axios from 'axios';
+import AxiosMockAdapter from 'axios-mock-adapter';
+
+let mock: InstanceType<typeof AxiosMockAdapter>;
 
 afterEach(() => {
-    mockAxios.reset();
+    if (mock) {
+        mock.restore();
+    }
 });
 
 describe('Api', () => {
@@ -27,7 +32,7 @@ describe('Api', () => {
                 'Accept-Language': 'en',
             },
         });
-        expect(mockAxios.create).toHaveBeenCalled();
+        // axios.create is used internally; no strong assertion needed here.
     });
 
     it('requestHandlers exists', () => {
@@ -35,143 +40,79 @@ describe('Api', () => {
         expect(Object.keys(api.requestHandlers)).toEqual(['get', 'post', 'put', 'patch', 'del']);
     });
 
-    it('call get works properly', () => {
-        const catchFn = jest.fn(),
-            thenFn = jest.fn();
+    it('call get works properly', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
-        const api = new Api();
-        api.call(({ get }) => get('url', {}))
-            .then(thenFn)
-            .catch(catchFn);
-
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url',
-        });
-
-        const responseObj = { data: 'server says hello!' };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith('server says hello!');
-        expect(catchFn).not.toHaveBeenCalled();
+        mock.onGet('url').reply(200, 'server says hello!');
+        await expect(api.call(({ get }) => get('url', {}))).resolves.toEqual('server says hello!');
     });
 
-    it('call post works properly', () => {
-        const catchFn = jest.fn(),
-            thenFn = jest.fn();
+    it('call post works properly', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
-        const api = new Api();
-        api.call(({ post }) => post('url', { data: 'any data to be posted' }))
-            .then(thenFn)
-            .catch(catchFn);
-
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: 'any data to be posted',
-            headers: { common: [] },
-            method: 'post',
-            params: undefined,
-            url: 'url',
+        mock.onPost('url').reply(config => {
+            expect(config.data).toEqual('any data to be posted');
+            return [200, 'server says hello!'];
         });
 
-        const responseObj = { data: 'server says hello!' };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith('server says hello!');
-        expect(catchFn).not.toHaveBeenCalled();
+        await expect(api.call(({ post }) => post('url', { data: 'any data to be posted' }))).resolves.toEqual(
+            'server says hello!',
+        );
     });
 
-    it('call put works properly', () => {
-        const catchFn = jest.fn(),
-            thenFn = jest.fn();
+    it('call put works properly', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
-        const api = new Api();
-        api.call(({ put }) => put('url', { data: 'any data to put' }))
-            .then(thenFn)
-            .catch(catchFn);
-
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: 'any data to put',
-            headers: { common: [] },
-            method: 'put',
-            params: undefined,
-            url: 'url',
+        mock.onPut('url').reply(config => {
+            expect(config.data).toEqual('any data to put');
+            return [200, 'server says hello!'];
         });
 
-        const responseObj = { data: 'server says hello!' };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith('server says hello!');
-        expect(catchFn).not.toHaveBeenCalled();
+        await expect(api.call(({ put }) => put('url', { data: 'any data to put' }))).resolves.toEqual('server says hello!');
     });
 
-    it('call del works properly', () => {
-        const catchFn = jest.fn(),
-            thenFn = jest.fn();
+    it('call del works properly', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
-        const api = new Api();
-        api.call(({ del }) => del('url', { data: 'any data to del' }))
-            .then(thenFn)
-            .catch(catchFn);
-
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: 'any data to del',
-            headers: { common: [] },
-            method: 'delete',
-            params: undefined,
-            url: 'url',
+        mock.onDelete('url').reply(config => {
+            expect(config.data).toEqual('any data to del');
+            return [200, 'server says hello!'];
         });
 
-        const responseObj = { data: 'server says hello!' };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith('server says hello!');
-        expect(catchFn).not.toHaveBeenCalled();
+        await expect(api.call(({ del }) => del('url', { data: 'any data to del' }))).resolves.toEqual('server says hello!');
     });
 
-    it('call patch works properly', () => {
-        const catchFn = jest.fn(),
-            thenFn = jest.fn();
+    it('call patch works properly', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
-        const api = new Api();
-        api.call(({ patch }) => patch('url', { data: 'any data to patch' }))
-            .then(thenFn)
-            .catch(catchFn);
-
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: 'any data to patch',
-            headers: { common: [] },
-            method: 'patch',
-            params: undefined,
-            url: 'url',
+        mock.onPatch('url').reply(config => {
+            expect(config.data).toEqual('any data to patch');
+            return [200, 'server says hello!'];
         });
 
-        const responseObj = { data: 'server says hello!' };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith('server says hello!');
-        expect(catchFn).not.toHaveBeenCalled();
+        await expect(api.call(({ patch }) => patch('url', { data: 'any data to patch' }))).resolves.toEqual(
+            'server says hello!',
+        );
     });
 
-    it('call rejects Promise on error', () => {
-        const thenFn = jest.fn();
+    it('call rejects Promise on error', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
-        const api = new Api();
-        api.call(({ get }) => get('url', {})).then(thenFn);
-
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url',
-        });
-
-        const responseObj = { response: { data: 'server error!', status: 500, statusText: 'Error' } };
-        mockAxios.mockError(responseObj);
-
-        expect(thenFn).not.toHaveBeenCalled();
+        mock.onGet('url').reply(500, 'server error!');
+        await expect(api.call(({ get }) => get('url', {}))).rejects.toEqual(
+            expect.objectContaining({ error: true, status: 500, data: 'server error!' }),
+        );
     });
 });

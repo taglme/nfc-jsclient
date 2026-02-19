@@ -1,5 +1,6 @@
 export interface AppInfoResource {
     name: string;
+    host_name?: string;
     version: string;
     commit: string;
     sdk_info: string;

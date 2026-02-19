@@ -1,52 +1,43 @@
 import Api from '../../src/api';
-import mockAxios from 'jest-mock-axios';
+import axios from 'axios';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import { SnippetCategory, SnippetResource } from '../../src/models/snippets';
 import { SnippetService, Snippet } from '../../src/client/snippets';
 
+let mock: InstanceType<typeof AxiosMockAdapter>;
+
 afterEach(() => {
-    mockAxios.reset();
+    if (mock) {
+        mock.restore();
+    }
 });
 
 describe('SnippetService', () => {
-    const api = new Api();
+    const api = new Api({}, axios.create());
 
     it('Instance created', () => {
         const a = new SnippetService(api, 'url');
         expect(a).toBeInstanceOf(SnippetService);
     });
 
-    it('getFiltered', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
-
+    it('getFiltered', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
         const a = new SnippetService(api, 'url');
-        a.getFiltered({ category: SnippetCategory.AdapterSnippet })
-            .then(thenFn)
-            .catch(catchFn);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url/snippets?category=adapter',
-        });
+        mock.onGet('url/snippets?category=adapter').reply(200, [
+            {
+                name: 'test',
+                category: SnippetCategory.toString(SnippetCategory.TagSnippet),
+                usage_id: 'test',
+                usage_name: 'test',
+                description: 'test',
+                code: 'test',
+            } as SnippetResource,
+        ]);
 
-        const responseObj = {
-            data: [
-                {
-                    name: 'test',
-                    category: SnippetCategory.toString(SnippetCategory.TagSnippet),
-                    usage_id: 'test',
-                    usage_name: 'test',
-                    description: 'test',
-                    code: 'test',
-                },
-            ] as SnippetResource[],
-        };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith([
+        await expect(a.getFiltered({ category: SnippetCategory.AdapterSnippet })).resolves.toEqual([
             {
                 name: 'test',
                 category: SnippetCategory.TagSnippet,
@@ -56,8 +47,6 @@ describe('SnippetService', () => {
                 code: 'test',
             },
         ]);
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 });
 

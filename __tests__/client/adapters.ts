@@ -1,53 +1,44 @@
 import Api from '../../src/api';
-import mockAxios from 'jest-mock-axios';
+import axios from 'axios';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import AdapterService, { Adapter } from '../../src/client/adapters';
 import { AdapterResource, AdapterStatus, AdapterType } from '../../src/models/adapters';
 
+let mock: InstanceType<typeof AxiosMockAdapter>;
+
 afterEach(() => {
-    mockAxios.reset();
+    if (mock) {
+        mock.restore();
+    }
 });
 
 describe('AdapterService', () => {
-    const api = new Api();
+    const api = new Api({}, axios.create());
 
     it('Instance created', () => {
         const a = new AdapterService(api, 'url');
         expect(a).toBeInstanceOf(AdapterService);
     });
 
-    it('getFiltered', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
+    it('getFiltered', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
         const a = new AdapterService(api, 'url');
-        a.getFiltered(AdapterType.Barcode)
-            .then(thenFn)
-            .catch(catchFn);
+        mock.onGet('url/adapters?type=barcode').reply(200, [
+            {
+                adapter_id: 'test',
+                href: 'test',
+                name: 'test',
+                type: AdapterType.toString(AdapterType.Barcode),
+                driver: 'test',
+                status: AdapterStatus.toString(AdapterStatus.Active),
+                kind: 'test',
+            } as AdapterResource,
+        ]);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url/adapters?type=barcode',
-        });
-
-        const responseObj = {
-            data: [
-                {
-                    adapter_id: 'test',
-                    href: 'test',
-                    name: 'test',
-                    type: AdapterType.toString(AdapterType.Barcode),
-                    driver: 'test',
-                    status: AdapterStatus.toString(AdapterStatus.Active),
-                    kind: 'test',
-                },
-            ] as AdapterResource[],
-        };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith([
+        await expect(a.getFiltered(AdapterType.Barcode)).resolves.toEqual([
             {
                 adapterId: 'test',
                 href: 'test',
@@ -58,41 +49,25 @@ describe('AdapterService', () => {
                 kind: 'test',
             },
         ]);
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 
-    it('get', () => {
-        const catchFn = jest.fn();
-        const thenFn = jest.fn();
+    it('get', async () => {
+        const instance = axios.create();
+        mock = new AxiosMockAdapter(instance);
+        const api = new Api({}, instance);
 
         const a = new AdapterService(api, 'url');
-        a.get('aId')
-            .then(thenFn)
-            .catch(catchFn);
+        mock.onGet('url/adapters/aId').reply(200, {
+            adapter_id: 'test',
+            href: 'test',
+            name: 'test',
+            type: AdapterType.toString(AdapterType.Barcode),
+            status: AdapterStatus.toString(AdapterStatus.Active),
+            driver: 'test',
+            kind: 'test',
+        } as AdapterResource);
 
-        expect(mockAxios).toHaveBeenCalledWith({
-            data: undefined,
-            headers: { common: [] },
-            method: 'get',
-            params: undefined,
-            url: 'url/adapters/aId',
-        });
-
-        const responseObj = {
-            data: {
-                adapter_id: 'test',
-                href: 'test',
-                name: 'test',
-                type: AdapterType.toString(AdapterType.Barcode),
-                status: AdapterStatus.toString(AdapterStatus.Active),
-                driver: 'test',
-                kind: 'test',
-            } as AdapterResource,
-        };
-        mockAxios.mockResponse(responseObj);
-
-        expect(thenFn).toHaveBeenCalledWith({
+        await expect(a.get('aId')).resolves.toEqual({
             adapterId: 'test',
             href: 'test',
             name: 'test',
@@ -101,8 +76,6 @@ describe('AdapterService', () => {
             driver: 'test',
             kind: 'test',
         });
-
-        expect(catchFn).not.toHaveBeenCalled();
     });
 });
 
