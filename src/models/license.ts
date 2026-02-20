@@ -46,7 +46,10 @@ export interface LicenseResource {
     start: string;
     end: string;
     support: string;
-    features: string[];
+    // Legacy field (older servers).
+    features?: string[];
+    // Current field.
+    plugins?: string[];
     id: string;
     owner: string;
     email: string;

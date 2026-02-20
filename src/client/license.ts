@@ -28,7 +28,10 @@ export class License {
     start: string;
     end: string;
     support: string;
+    // features is kept for backward compatibility with older schema.
+    // Prefer plugins.
     features: string[];
+    plugins: string[];
     id: string;
     owner: string;
     email: string;
@@ -41,6 +44,7 @@ export class License {
         this.start = r.start;
         this.end = r.end;
         this.support = r.support;
+        this.plugins = r.plugins || r.features || [];
         this.features = r.features || [];
         this.id = r.id;
         this.owner = r.owner;
@@ -93,10 +97,17 @@ export default class LicenseService {
             });
 
     // GetAccess returns the host tier and allowed scopes for the current host.
-    getAccess = (): Promise<LicenseAccessResource> =>
-        this.api
-            .call<LicenseAccessResource>(({ get }) => get(this.url + this.basePath + '/access', {}))
+    getAccess = (opts?: { xUserToken?: string; xAppKey?: string }): Promise<LicenseAccessResource> => {
+        const headers: Record<string, string> = {};
+        if (opts?.xAppKey) headers['X-App-Key'] = String(opts.xAppKey);
+        if (opts?.xUserToken) headers['X-User-Token'] = String(opts.xUserToken);
+
+        return this.api
+            .call<LicenseAccessResource>(({ get }) =>
+                get(this.url + this.basePath + '/access', Object.keys(headers).length ? { headers } : {}),
+            )
             .catch((err: Error) => {
                 throw new Error('Error on license get access: ' + JSON.stringify(err));
             });
+    };
 }

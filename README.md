@@ -67,6 +67,11 @@ xAppKey = "<paste-x-app-key>"
 // X-User-Token is optional
 xUserToken = ""
 
+// Notes:
+// - X-App-Key is a thin signed JWT that identifies the client application.
+// - X-User-Token is a short-lived signed JWT that contains a full `license` payload.
+// - GET /licenses/access returns the active host access derived from the highest-priority license source for the request.
+
 client = new NfcClient(url, locale, xAppKey, xUserToken)
 
 // Request to get About info
