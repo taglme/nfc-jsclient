@@ -23,6 +23,29 @@ export interface JobCapabilitiesResource {
     allow_multistep: boolean;
 }
 
+export interface TokenPolicyResource {
+    use_header_token?: boolean;
+    use_authorization?: boolean;
+    use_service_token?: boolean;
+    prefer_header_token?: boolean;
+}
+
+export interface HostPolicyResource {
+    allowed_scopes?: string[];
+    create_job_rate_limit?: CreateJobRateLimitResource;
+    job_capabilities?: JobCapabilitiesResource;
+    create_job_constraints?: CreateJobConstraintsResource;
+    params?: Record<string, unknown>;
+}
+
+export interface AppClassPolicyResource {
+    app_class?: string;
+    allowed_scopes?: string[];
+    create_job_rate_limit?: CreateJobRateLimitResource;
+    job_capabilities?: JobCapabilitiesResource;
+    create_job_constraints?: CreateJobConstraintsResource;
+}
+
 export interface CreateJobConstraintsResource {
     max_repeat?: number | null;
     max_steps?: number | null;
@@ -57,4 +80,11 @@ export interface LicenseResource {
     type: string;
     host_tier: string;
     applications: ApplicationLicenseResource[];
+
+    active?: boolean;
+    revoked_app_key_ids?: string[];
+    app_class_policies?: Record<string, AppClassPolicyResource>;
+    policies?: Record<string, HostPolicyResource>;
+    job_policies?: Record<string, JobCapabilitiesResource>;
+    token_policy?: TokenPolicyResource;
 }

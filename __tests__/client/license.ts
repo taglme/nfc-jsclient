@@ -2,7 +2,7 @@ import Api from '../../src/api';
 import axios from 'axios';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import LicenseService, { License, ApplicationLicense } from '../../src/client/license';
-import { LicenseAccessResource, LicenseResource } from '../../src/models/license';
+import { LicenseResource } from '../../src/models/license';
 
 let mock: InstanceType<typeof AxiosMockAdapter>;
 
@@ -79,21 +79,33 @@ describe('LicenseService', () => {
         const api = new Api({}, instance);
         const s = new LicenseService(api, 'url');
 
-        const access: LicenseAccessResource = {
-            machine_id: 'MID123',
+        const resp: LicenseResource = {
+            start: '2024-01-01',
+            end: '2025-01-01',
+            support: '2025-01-01',
+            plugins: ['Nfcd'],
+            id: 'LIC-1',
+            owner: 'Owner',
+            email: 'o@example.com',
+            machine: 'MID123',
+            type: 'standard',
             host_tier: 'pro',
-            allowed_scopes: ['job:create'],
-            allowed_command_scopes: ['command:*'],
-            create_job_rate_limit: { min_interval_ms: 10, window_ms: 1000, max_in_window: 2 },
-            job_capabilities: { allow_repeat: true, allow_batch: true, allow_multistep: true },
-            create_job_constraints: { max_repeat: 10, max_steps: 5, max_queued_jobs_per_adapter: 1 },
+            applications: [],
+            policies: {
+                nfcd: {
+                    allowed_scopes: ['job:create'],
+                    create_job_rate_limit: { min_interval_ms: 10, window_ms: 1000, max_in_window: 2 },
+                    job_capabilities: { allow_repeat: true, allow_batch: true, allow_multistep: true },
+                    create_job_constraints: { max_repeat: 10, max_steps: 5, max_queued_jobs_per_adapter: 1 },
+                },
+            },
         };
 
-        mock.onGet('url/licenses/access').reply(200, access);
+        mock.onGet('url/licenses/access').reply(200, resp);
         await expect(s.getAccess()).resolves.toEqual(
             expect.objectContaining({
-                host_tier: 'pro',
-                machine_id: 'MID123',
+                hostTier: 'pro',
+                machine: 'MID123',
             }),
         );
     });

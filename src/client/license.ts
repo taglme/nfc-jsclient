@@ -1,9 +1,12 @@
 import { IApi } from '../interfaces';
 import {
     ApplicationLicenseResource,
-    LicenseAccessResource,
     LicenseMIDResource,
     LicenseResource,
+    type AppClassPolicyResource,
+    type HostPolicyResource,
+    type TokenPolicyResource,
+    type JobCapabilitiesResource,
 } from '../models/license';
 
 export class ApplicationLicense {
@@ -40,6 +43,13 @@ export class License {
     hostTier: string;
     applications: ApplicationLicense[];
 
+    active?: boolean;
+    revokedAppKeyIDs?: string[];
+    appClassPolicies?: Record<string, AppClassPolicyResource>;
+    policies?: Record<string, HostPolicyResource>;
+    jobPolicies?: Record<string, JobCapabilitiesResource>;
+    tokenPolicy?: TokenPolicyResource;
+
     constructor(r: LicenseResource) {
         this.start = r.start;
         this.end = r.end;
@@ -53,6 +63,13 @@ export class License {
         this.type = r.type;
         this.hostTier = r.host_tier;
         this.applications = (r.applications || []).map(a => new ApplicationLicense(a));
+
+        this.active = (r as any).active;
+        this.revokedAppKeyIDs = (r as any).revoked_app_key_ids || [];
+        this.appClassPolicies = (r as any).app_class_policies;
+        this.policies = (r as any).policies;
+        this.jobPolicies = (r as any).job_policies;
+        this.tokenPolicy = (r as any).token_policy;
     }
 }
 
@@ -96,16 +113,18 @@ export default class LicenseService {
                 throw new Error('Error on license get MID: ' + JSON.stringify(err));
             });
 
-    // GetAccess returns the host tier and allowed scopes for the current host.
-    getAccess = (opts?: { xUserToken?: string; xAppKey?: string }): Promise<LicenseAccessResource> => {
+    // GetAccess returns the currently effective (active) license.
+    // Resolution priority is server-defined (X-User-Token > service token > offline license).
+    getAccess = (opts?: { xUserToken?: string; xAppKey?: string }): Promise<License> => {
         const headers: Record<string, string> = {};
         if (opts?.xAppKey) headers['X-App-Key'] = String(opts.xAppKey);
         if (opts?.xUserToken) headers['X-User-Token'] = String(opts.xUserToken);
 
         return this.api
-            .call<LicenseAccessResource>(({ get }) =>
+            .call<LicenseResource>(({ get }) =>
                 get(this.url + this.basePath + '/access', Object.keys(headers).length ? { headers } : {}),
             )
+            .then<License>(resp => new License(resp))
             .catch((err: Error) => {
                 throw new Error('Error on license get access: ' + JSON.stringify(err));
             });
